@@ -1,20 +1,18 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]
+    [Header("Movement")]
     public float moveSpeed = 5f;
 
-    [Header("Keybinds")]
-    public KeyCode moveUp = KeyCode.W;
-    public KeyCode moveDown = KeyCode.S;
-    public KeyCode moveLeft = KeyCode.A;
-    public KeyCode moveRight = KeyCode.D;
+    [Header("Input")]
+    public InputActionReference moveAction;
 
     private Rigidbody2D rb;
     private Vector2 movement;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
 
@@ -22,35 +20,31 @@ public class PlayerMovement : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
     }
 
+    void OnEnable()
+    {
+        moveAction.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        moveAction.action.Disable();
+    }
+
     void Update()
     {
-        movement = Vector2.zero;
-
-        if (Input.GetKey(moveUp))
-            movement.y += 1;
-
-        if (Input.GetKey(moveDown))
-            movement.y -= 1;
-
-        if (Input.GetKey(moveLeft))
-            movement.x -= 1;
-
-        if (Input.GetKey(moveRight))
-            movement.x += 1;
-
+        movement = moveAction.action.ReadValue<Vector2>();
         movement = movement.normalized;
 
-        // Rotate the player toward the movement direction
-        if (movement != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
-
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        }
     }
 
     void FixedUpdate()
     {
         rb.linearVelocity = movement * moveSpeed;
+
+        if (movement != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
+            rb.MoveRotation(angle);
+        }
     }
 }
