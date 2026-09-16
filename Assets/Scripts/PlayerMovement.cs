@@ -10,11 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public InputActionReference moveAction;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private Vector2 movement;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
@@ -34,17 +36,16 @@ public class PlayerMovement : MonoBehaviour
     {
         movement = moveAction.action.ReadValue<Vector2>();
         movement = movement.normalized;
-
+        animator.SetBool("IsRunning", movement != Vector2.zero);
     }
 
     void FixedUpdate()
     {
         rb.linearVelocity = movement * moveSpeed;
 
-        if (movement != Vector2.zero)
+        if (movement.x != 0f)
         {
-            float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
-            rb.MoveRotation(angle);
+            rb.transform.rotation = Quaternion.Euler(0f, movement.x < 0f ? -180f : 0f, 0f);
         }
     }
 }
