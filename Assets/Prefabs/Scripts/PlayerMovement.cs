@@ -16,7 +16,12 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+
+        Transform visual = transform.Find("visual");
+        if (visual != null)
+        {
+            animator = visual.GetComponent<Animator>();
+        }
 
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
@@ -46,17 +51,5 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         rb.linearVelocity = movement * moveSpeed;
-
-        if (movement != Vector2.zero)
-        {
-            if (Mathf.Abs(movement.y) > Mathf.Abs(movement.x))
-            {
-                rb.transform.rotation = Quaternion.Euler(0f, 0f, movement.y > 0f ? 90f : -90f);
-            }
-            else
-            {
-                rb.transform.rotation = Quaternion.Euler(0f, movement.x < 0f ? -180f : 0f, 0f);
-            }
-        }
     }
 }
