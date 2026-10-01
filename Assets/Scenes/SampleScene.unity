@@ -536,6 +536,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!4 &199008708 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3242160664165120928, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+  m_PrefabInstance: {fileID: 4936969569282190943}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &290115268
 GameObject:
   m_ObjectHideFlags: 0
@@ -1407,6 +1412,11 @@ Transform:
   - {fileID: 1639876810}
   m_Father: {fileID: 1410841231}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1354999708 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4848773914714209541, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+  m_PrefabInstance: {fileID: 4936969569282190943}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1410841230
 GameObject:
   m_ObjectHideFlags: 0
@@ -2163,6 +2173,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3242160664165120928, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3242160664165120928, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4022136477424646115, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -2211,6 +2229,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6524901461590468648, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+      propertyPath: facing
+      value: 
+      objectReference: {fileID: 1354999708}
+    - target: {fileID: 6524901461590468648, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+      propertyPath: visual
+      value: 
+      objectReference: {fileID: 199008708}
     - target: {fileID: 6672797255328993099, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
       propertyPath: m_Name
       value: Player
