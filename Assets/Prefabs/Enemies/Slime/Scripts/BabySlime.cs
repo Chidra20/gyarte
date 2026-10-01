@@ -1,0 +1,101 @@
+using UnityEngine;
+
+public class BabySlime : MonoBehaviour
+{
+    public int maxHealth = 1;
+    private int currentHealth;
+
+    [Header("Fusion Settings")]
+    public BabySlime partnerSlime;
+    public GameObject bigSlimePrefab;
+    public float moveSpeed = 1.5f;
+
+    [Header("Fusion Delay")]
+    [Tooltip("Time in seconds before the baby slimes can merge back together.")]
+    public float fuseDelay = 3.0f; // Adjust this in the Inspector
+    private float timer;
+    private bool hasMerged;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+        timer = fuseDelay; // Start countdown
+    }
+
+    void Update()
+    {
+        // Countdown fuse timer
+        if (timer > 0)
+        {
+            timer -= Time.deltaTime;
+        }
+
+        // Always keep moving toward partner
+        if (partnerSlime != null)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                partnerSlime.transform.position,
+                moveSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        TryMerge(other);
+    }
+
+    // Handles trigger stays in case they are already touching when the timer hits 0
+    void OnTriggerStay2D(Collider2D other)
+    {
+        TryMerge(other);
+    }
+
+    void TryMerge(Collider2D other)
+    {
+        // Block fusion while timer is running
+        if (timer > 0) return;
+
+        BabySlime otherBaby = other.GetComponent<BabySlime>();
+
+        if (otherBaby != null && otherBaby == partnerSlime)
+        {
+            MergeBackIntoBigSlime();
+        }
+    }
+
+    void MergeBackIntoBigSlime()
+    {
+        // Both babies get the trigger callback in the same physics step,
+        // so only let the first one do the merge or two big slimes get spawned
+        if (hasMerged || partnerSlime.hasMerged) return;
+        hasMerged = true;
+        partnerSlime.hasMerged = true;
+
+        Vector3 spawnPos = (transform.position + partnerSlime.transform.position) / 2f;
+
+        if (bigSlimePrefab != null)
+        {
+            Instantiate(bigSlimePrefab, spawnPos, Quaternion.identity);
+        }
+
+        Destroy(partnerSlime.gameObject);
+        Destroy(gameObject);
+    }
+}
