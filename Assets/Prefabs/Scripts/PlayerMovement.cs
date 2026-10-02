@@ -54,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Paused: keep the current pose instead of turning on the spot
+        if (Time.timeScale == 0f) return;
+
         movement = moveAction.action.ReadValue<Vector2>();
         movement = movement.normalized;
 

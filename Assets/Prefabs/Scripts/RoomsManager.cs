@@ -3,7 +3,8 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     private Transform player;
-    private string currentRoom;
+    // Tracked by object, not by name, so a freshly generated room is never mistaken for the old one
+    private Transform currentRoom;
 
     void Start()
     {
@@ -30,9 +31,9 @@ public class RoomManager : MonoBehaviour
 
             if (roomCollider != null && roomCollider.OverlapPoint(player.position))
             {
-                if (currentRoom != room.name)
+                if (currentRoom != room)
                 {
-                    currentRoom = room.name;
+                    currentRoom = room;
                     SetActiveRoom(room);
                 }
 

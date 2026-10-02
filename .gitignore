@@ -105,3 +105,27 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# ---------- Project additions ----------
+
+# Unity-generated solution file (new .slnx format, not covered by *.sln above)
+*.slnx
+
+# JetBrains Rider project folder
+.idea/
+
+# Obsidian: per-user view state inside the vault (shared settings like app.json stay tracked)
+**/.obsidian/workspace.json
+**/.obsidian/workspace-mobile.json
+**/.obsidian/graph.json
+**/.obsidian/cache
+.trash/
+
+# Claude Code: personal settings and notes (CLAUDE.md and .claude/settings.json stay tracked)
+**/.claude/settings.local.json
+CLAUDE.local.md
+
+# OS clutter
+.DS_Store
+Thumbs.db
+[Dd]esktop.ini

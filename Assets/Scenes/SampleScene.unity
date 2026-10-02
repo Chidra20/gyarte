@@ -2237,6 +2237,10 @@ PrefabInstance:
       propertyPath: visual
       value: 
       objectReference: {fileID: 199008708}
+    - target: {fileID: 6524901461590468648, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+      propertyPath: facingObject
+      value: 
+      objectReference: {fileID: 1354999708}
     - target: {fileID: 6672797255328993099, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
       propertyPath: m_Name
       value: Player
