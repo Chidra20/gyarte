@@ -446,7 +446,7 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
-  meleeKey: 106
+  meleeAction: {fileID: 5241141790313621159, guid: b5bf6cff86b4b7a428a8c0ae472d6060, type: 3}
   attackPoint: {fileID: 0}
   attackRange: 0.75
   attackPointDistance: 0.95
@@ -460,7 +460,7 @@ MonoBehaviour:
   fillAlpha: 0.25
   flashFillAlpha: 0.6
   flashTime: 0.15
-  castKey: 111
+  castAction: {fileID: 2347472943543628948, guid: b5bf6cff86b4b7a428a8c0ae472d6060, type: 3}
   maxSpellCharges: 2
   spellRechargeTime: 5
   projectilePrefab: {fileID: 4401248506713191577, guid: 15c186a3dbc2a30469e01fbff7abe189, type: 3}

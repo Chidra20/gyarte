@@ -13,8 +13,11 @@ public class EnemyHealth : MonoBehaviour
     private BigSlime bigSlime;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
+    private bool isDead;
 
-    void Start()
+    // Awake, not Start: a slime spawned by a merge can be hit in the same frame it appears,
+    // before Start has run, and would otherwise have 0 health
+    void Awake()
     {
         currentHealth = maxHealth;
         bigSlime = GetComponent<BigSlime>();
@@ -22,8 +25,19 @@ public class EnemyHealth : MonoBehaviour
         if (spriteRenderer != null) originalColor = spriteRenderer.color;
     }
 
+    // Gives this enemy a different amount of health than its prefab has, at full health
+    public void SetMaxHealth(int amount)
+    {
+        maxHealth = Mathf.Max(1, amount);
+        currentHealth = maxHealth;
+    }
+
     public void TakeDamage(int damage)
     {
+        // Destroy only happens at the end of the frame, so a second hit in the same frame
+        // (a fireball and a swing landing together) would make a big slime split twice
+        if (isDead) return;
+
         currentHealth -= damage;
         Debug.Log(gameObject.name + " took " + damage + " damage! HP remaining: " + currentHealth);
 
@@ -52,6 +66,8 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        isDead = true;
+
         if (bigSlime != null)
         {
             // Triggers the split into 2 baby slimes and destroys this big slime

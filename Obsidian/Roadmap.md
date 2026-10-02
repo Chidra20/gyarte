@@ -6,25 +6,34 @@ Where the project goes next. The week-by-week record is in [[Weekly]]; back to [
 
 **Goal:** the player can attack, things have health, and the slime can hurt the player.
 
-### The pieces
+### Done (2 Oct 2026, by yumisyumm — see [[Combat]])
 
-1. **Health component.** One script for anything that can be hurt: current and max health, a `TakeDamage` method, a short hit flash, and an event when health reaches zero. This is the `EnemyHealth` script the baby slime prefab already expects; building it as a general `Health` covers the player too.
-2. **Player attack.** An attack input action. On press, hit everything on the `Enemy` layer in a small area at the `facing` marker ([[Player]]), with a cooldown and an attack animation per direction.
-3. **Slime reactions.** Big slime at zero health calls its existing `DieAndSplit()`. Baby slime at zero health dies. Both already have the code; they only need to be connected to the health event ([[Slime Enemy]]).
-4. **Slime damage.** When the chase reaches the player, deal contact damage on a timer, with a brief knockback so the player is not pinned.
-5. **Player death.** The simplest version first: reload the scene, or reuse the pause screen's End Game path back to the start menu ([[Menus and Game Flow]]).
-6. **Feedback.** A health display on the existing canvas, the hit flash, and a short invulnerability window after being hit.
+- **Enemy health.** `EnemyHealth` on both slime prefabs, with a hit flash. It is slime-specific rather than the general `Health` first planned, and the player has none yet.
+- **Player attack.** Two of them: a scythe swing and a fire spell with charges. Both are input actions that work on a gamepad (Square and Triangle, or X and Y) and on the keyboard. Each has one animation rather than one per direction.
+- **Slime reactions.** A big slime at zero health splits, a baby dies, and a hit slime turns on the player. The split-and-merge fight is playable for the first time, so this is the point to judge whether it is fun.
+- **Test menu.** A developer window, opened with U in `testing the new thing`, for spawning enemies and changing settings live. Every new feature is added to it from now on. See [[Test Menu]].
 
-### Suggested order
+### Still to do
 
-Health → player attack → slime reactions → slime damage → player death → feedback. After step 3 the split-and-merge fight is playable for the first time, which is the earliest point to judge whether it is fun.
+1. **Slime damage.** When the chase reaches the player, deal contact damage on a timer, with a brief knockback so the player is not pinned. Today the slime pushes the player around instead ([[Slime Enemy]]).
+2. **Player health.** Either generalise `EnemyHealth` into one `Health` with a death event, or give the player its own.
+3. **Player death.** The simplest version first: reload the scene, or reuse the pause screen's End Game path back to the start menu ([[Menus and Game Flow]]).
+4. **Feedback.** A health display and a spell-charge display on the existing canvas (`PlayerAttack` already exposes the charge numbers), and a short invulnerability window after being hit.
+5. **Fix the remaining combat bug** listed under Known issues: the swing hitting through walls.
+
+Each of these gets its controls in the [[Test Menu]] as it is built: enemy damage, player health, and so on.
+
+### Decisions made by the first combat pass
+
+- **Attack style:** both. A melee swing and a ranged, piercing fire spell limited by charges.
+- **Health:** the big slime takes two hits, a baby one.
+- **Merge pressure:** the babies now move slowly and can merge after about a second, down from three.
 
 ### Open decisions
 
-- **Attack style:** a quick melee swing in front of the player, or something with range?
-- **Baby health:** the prefab says 1. Should the big slime take several hits?
-- **Merge pressure:** is 3 seconds before babies can re-merge the right window once the player can actually fight them?
-- **Where to test:** `Test AI enemy` is the simplest scene for combat; moving to generated levels needs the bridge work below.
+- **Is the merge window right?** About a second is tight against a swing that takes almost half of that. Play it and tune.
+- **Should the player be able to move while attacking?** They can today; casting has a switch to lock movement, swinging does not.
+- **Where to test:** slimes can now be spawned into a generated level from the [[Test Menu]], which makes `testing the new thing` usable for combat as well as `Test AI enemy`. Enemies placed by the level itself still need the bridge work below.
 
 ## After combat — connecting the systems
 
@@ -48,10 +57,13 @@ These turn the separate tests into one game. Each is described in its system not
 
 | Issue | Where | Impact |
 |---|---|---|
-| Missing `EnemyHealth` script on `BabySlime.prefab` | [[Slime Enemy]] | Warning in the editor; resolved by the Week 2 health component |
-| Nothing can deal damage | everywhere | The Week 2 goal |
-| Baby slimes move through walls | [[Slime Enemy]] | Visible once splitting works |
-| Pathfinder keeps old walls after a level rebuild | [[Pathfinding]] | Blocks slimes in generated levels |
+| Nothing can hurt the player | everywhere | The rest of the Week 2 goal |
+| Melee hits through walls | [[Combat]] | The swing's hit circle has no wall check |
+| Chasing slime shoves the player | [[Slime Enemy]] | The player is carried along instead of the slime stopping; goes away with contact damage and knockback |
+| Baby slimes move through walls | [[Slime Enemy]] | Now visible in play, since splitting works |
+| Pathfinder keeps old walls after a level rebuild | [[Pathfinding]] | Blocks slimes that live through a rebuild. The [[Test Menu]] sidesteps it by removing enemies when it randomizes; the Randomize button on the canvas does not |
+| Test menu is in the build | [[Test Menu]] | Nothing strips it from a released game yet |
+| Stale `castKey` override in `Test AI enemy` | [[Combat]] | Left from before the attacks became input actions; it does nothing and can be removed from the Player's overrides in that scene |
 | Stick input is always full speed | [[Player]] | Design choice to confirm |
 | Unused `PlayerInput` component on the player | [[Player]] | None; cleanup |
 | Escape was not tested with a real key press | [[Menus and Game Flow]] | The pause logic was verified by calling it directly; the key itself needs one manual check |
@@ -60,8 +72,10 @@ These turn the separate tests into one game. Each is described in its system not
 ## Cleanup when convenient
 
 - Move scripts into `Assets/Scripts/`, rename `RoomsManager.cs` to match its class, fix the `Pallates` folder name. Do these inside Unity so references survive.
+- Rename `EnemyHeatlh.cs` to `EnemyHealth.cs` inside Unity.
+- Remove the unused health fields and `TakeDamage` from `BabySlime`, and its trigger callbacks that never fire.
+- Remove the `Debug.Log` on every hit in `EnemyHealth` once combat is settled.
 - Delete the duplicate `New Scene` files.
-- Commit the Week 1 randomizer and menu work.
 
 ## Tooling note
 

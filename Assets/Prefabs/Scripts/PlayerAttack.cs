@@ -1,15 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-// J: scythe swing (melee). O: fire spell that shoots a fireball, with charges that recharge over time.
+// Attack action: scythe swing (melee). Projectile action: fire spell that shoots a fireball,
+// with charges that recharge over time. The buttons and keys are set in PlayerInputActions.
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
     public int attackDamage = 1;
     public LayerMask enemyLayers;
 
-    [Header("Scythe Swing (J)")]
-    public KeyCode meleeKey = KeyCode.J;
+    [Header("Scythe Swing")]
+    [Tooltip("The Attack action from PlayerInputActions (Square / X on a gamepad).")]
+    public InputActionReference meleeAction;
     [Tooltip("Center of the melee hitbox. Created automatically if left empty.")]
     public Transform attackPoint;
     public float attackRange = 0.75f;
@@ -32,8 +35,9 @@ public class PlayerAttack : MonoBehaviour
     [Range(0f, 1f)] public float flashFillAlpha = 0.6f;
     public float flashTime = 0.15f;
 
-    [Header("Fire Spell (O)")]
-    public KeyCode castKey = KeyCode.O;
+    [Header("Fire Spell")]
+    [Tooltip("The Projectile action from PlayerInputActions (Triangle / Y on a gamepad).")]
+    public InputActionReference castAction;
     [Tooltip("How many fire spells can be stored up and cast back to back.")]
     public int maxSpellCharges = 2;
     [Tooltip("Seconds to get one charge back. Charges come back one at a time.")]
@@ -96,20 +100,32 @@ public class PlayerAttack : MonoBehaviour
         CreateHitboxDisplay();
     }
 
+    void OnEnable()
+    {
+        if (meleeAction != null) meleeAction.action.Enable();
+        if (castAction != null) castAction.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (meleeAction != null) meleeAction.action.Disable();
+        if (castAction != null) castAction.action.Disable();
+    }
+
     void Update()
     {
-        // Paused: ignore attack keys
+        // Paused: ignore attack buttons
         if (Time.timeScale == 0f) return;
 
         RechargeSpell();
         UpdateAttackPoint();
 
-        if (Input.GetKeyDown(meleeKey) && !IsAttacking)
+        if (meleeAction != null && meleeAction.action.WasPressedThisFrame() && !IsAttacking)
         {
             StartCoroutine(Swing());
         }
 
-        if (Input.GetKeyDown(castKey) && !IsAttacking && SpellCharges > 0)
+        if (castAction != null && castAction.action.WasPressedThisFrame() && !IsAttacking && SpellCharges > 0)
         {
             StartCoroutine(CastFireSpell());
         }
@@ -251,6 +267,13 @@ public class PlayerAttack : MonoBehaviour
             rechargeTimer -= spellRechargeTime;
             SpellCharges++;
         }
+    }
+
+    // Fills every charge back up at once
+    public void RefillSpellCharges()
+    {
+        SpellCharges = maxSpellCharges;
+        rechargeTimer = 0f;
     }
 
     // Plays the cast animation and shoots the fireball on the frame it leaves the hand

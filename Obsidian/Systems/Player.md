@@ -1,16 +1,18 @@
 # Player
 
-Movement, facing, animation and input. Part of the [[Architecture]]; back to [[Home]].
+Movement, facing, animation and input. Attacks are in [[Combat]]. Part of the [[Architecture]]; back to [[Home]].
 
 **Files:** `Assets/Prefabs/Player.prefab`, `Assets/Prefabs/Scripts/PlayerMovement.cs`, `Assets/Animations/PlayerAnim.controller`, `Assets/PlayerInputActions.inputactions`
 
 ## The prefab
 
 ```
-Player            tag: Player — Rigidbody2D, BoxCollider2D, PlayerMovement, PlayerInput
+Player            tag: Player — Rigidbody2D, BoxCollider2D, PlayerMovement, PlayerAttack, PlayerInput
 ├── visual        SpriteRenderer + Animator (the character art)
 └── facing        small red marker, kept one unit in front of the player
 ```
+
+At runtime `PlayerAttack` adds a third child, `Attack`, which marks the centre of the melee hitbox.
 
 - The body is dynamic with gravity off and rotation frozen, so walls stop it through normal physics.
 - The art sits on the `visual` child so it can be flipped without flipping the collider.
@@ -20,8 +22,12 @@ Player            tag: Player — Rigidbody2D, BoxCollider2D, PlayerMovement, Pl
 ## How movement works
 
 1. `Update` reads the `Move` action (WASD or left stick) as a 2D vector and normalizes it.
-2. The dominant axis picks one of four facing directions. Facing only changes while there is input, so the player keeps looking the way they last moved.
+2. The dominant axis picks one of four facing directions. Facing only changes while there is input, so the player keeps looking the way they last moved. It also does not change while an attack is playing, so a swing or cast finishes in the direction it started.
 3. `FixedUpdate` sets the body's velocity to direction × `moveSpeed`.
+
+`FacingVector` exposes the facing direction to other scripts; [[Combat]] uses it to aim.
+
+Move speed can be changed while playing from the [[Test Menu]].
 
 Because the input is normalized, speed is always full or zero. A slight stick tilt moves at full speed.
 
@@ -40,11 +46,13 @@ The script sets four animator parameters every frame:
 
 There is no left-facing art. Facing left sends `Direction` 3 (right) and mirrors `visual` by flipping its X scale.
 
-The controller has six states: three idles and three runs. "Any State" transitions jump into the right run state, and each run state falls back to its matching idle when its flag clears.
+The controller has three idles and three runs. "Any State" transitions jump into the right run state, and each run state falls back to its matching idle when its flag clears.
+
+Two more states, `Swing` and `FireSpell`, are entered from "Any State" by the `Swing` and `Attack` triggers that `PlayerAttack` sets, and return to the idle for the current direction when they finish. While an attack is playing the three run flags are held off so a run state cannot cut the attack short. Each attack has a single clip, not one per direction.
 
 ## The facing marker
 
-`facing` is moved to `player position + facing direction × facingObjectDistance` every frame. It does nothing yet. It exists as the origin for things that happen in front of the player; the Week 2 attack is the first intended use ([[Roadmap]]).
+`facing` is moved to `player position + facing direction × facingObjectDistance` every frame. It still does nothing. It was meant as the origin for attacks, but `PlayerAttack` keeps its own `Attack` point instead, so the marker is a leftover that one of the two could replace.
 
 ## Links to other systems
 
@@ -55,7 +63,7 @@ The controller has six states: three idles and three runs. "Any State" transitio
 
 ## How it can progress
 
-- **Attack** from the `facing` marker, with an attack animation per direction.
+- **Attack animations per direction**; the swing and the cast each use one clip for all four.
 - **Health and hurt feedback** once enemies can deal damage.
 - **Analog speed** by dropping the normalization for stick input, if walking slowly should be possible.
 - **More actions** (dash, interact) as extra entries in the input actions asset.

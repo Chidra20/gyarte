@@ -13348,6 +13348,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4848773914714209541, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
   m_PrefabInstance: {fileID: 2400000}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2400004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6524901461590468648, guid: 429b8a1e2469f5b499fbe1f9e7f46f87, type: 3}
+  m_PrefabInstance: {fileID: 2400000}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e427ca06f7c75374ab61f810606f146c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
 --- !u!1001 &2500000
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15085,6 +15096,62 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &1444828461
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1444828463}
+  - component: {fileID: 1444828462}
+  m_Layer: 0
+  m_Name: Test Menu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1444828462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444828461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28d76daeceec2a40aa460fd0adfdfde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestMenu
+  toggleKey: 35
+  openOnStart: 0
+  referenceHeight: 720
+  spawnables:
+  - name: Big Slime
+    prefab: {fileID: 5737207155772883977, guid: d5e09d9fb9e06f34f9b2d397892ccbf7, type: 3}
+  - name: Baby Slime
+    prefab: {fileID: 8413997262935697380, guid: 4a9d54083dcb757478614e208d6bb2cb, type: 3}
+  wallTag: wall
+  player: {fileID: 2400004}
+  levelRandomizer: {fileID: 2100003}
+  roomManager: {fileID: 1995092557}
+--- !u!4 &1444828463
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444828461}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1468308728
 GameObject:
   m_ObjectHideFlags: 0
@@ -15963,3 +16030,4 @@ SceneRoots:
   - {fileID: 2600001}
   - {fileID: 2900001}
   - {fileID: 1995092558}
+  - {fileID: 1444828463}

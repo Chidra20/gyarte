@@ -61,6 +61,10 @@ One prefab used by both menus, so a new setting only has to be added once.
 
 The panel has a `returnTo` reference: the object it hides while open and shows again when closed. Each scene sets it on its own instance (the menu column in the start scene, the pause options in the game scene). This is the only thing that differs between the two uses.
 
+## Not a menu of the game: the test menu
+
+The game scene has a third window, opened with U. It is a developer tool rather than part of the game's flow, it does not pause, and it is described in [[Test Menu]].
+
 ## Links to other systems
 
 - Start loads the scene built by the [[Level Randomizer]]. That scene keeps its saved level, so every run currently starts in the same layout until the Randomize button is pressed.
