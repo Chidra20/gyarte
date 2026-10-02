@@ -24,10 +24,21 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float facingObjectDistance = 1f;
     private Vector2 movement;
     private FacingDirection facingDirection = FacingDirection.Down;
+    private PlayerAttack attack;
+
+    // Which way the player faces, as a direction (used to aim attacks)
+    public Vector2 FacingVector => facingDirection switch
+    {
+        FacingDirection.Up => Vector2.up,
+        FacingDirection.Left => Vector2.left,
+        FacingDirection.Right => Vector2.right,
+        _ => Vector2.down
+    };
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        attack = GetComponent<PlayerAttack>();
 
         if (visual == null)
         {
@@ -60,8 +71,13 @@ public class PlayerMovement : MonoBehaviour
         movement = moveAction.action.ReadValue<Vector2>();
         movement = movement.normalized;
 
+        // While swinging or casting: keep facing the same way and let the attack animation play out
+        bool attacking = attack != null && attack.IsAttacking;
+        if (attack != null && attack.IsCasting && attack.lockMovementWhileCasting)
+            movement = Vector2.zero;
+
         bool primarilyVertical = Mathf.Abs(movement.y) > Mathf.Abs(movement.x);
-        if (movement != Vector2.zero)
+        if (movement != Vector2.zero && !attacking)
         {
             if (primarilyVertical)
             {
@@ -87,9 +103,9 @@ public class PlayerMovement : MonoBehaviour
             ? (int)FacingDirection.Right
             : (int)facingDirection;
         animator.SetInteger("Direction", animationDirection);
-        animator.SetBool("IsRunning", movement != Vector2.zero && !primarilyVertical);
-        animator.SetBool("RunningUp", primarilyVertical && movement.y > 0f);
-        animator.SetBool("RunningDown", primarilyVertical && movement.y < 0f);
+        animator.SetBool("IsRunning", !attacking && movement != Vector2.zero && !primarilyVertical);
+        animator.SetBool("RunningUp", !attacking && primarilyVertical && movement.y > 0f);
+        animator.SetBool("RunningDown", !attacking && primarilyVertical && movement.y < 0f);
 
         if (facingObject != null)
         {

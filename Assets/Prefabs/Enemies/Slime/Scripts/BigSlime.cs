@@ -183,6 +183,16 @@ public class BigSlime : MonoBehaviour
         path.Clear();
     }
 
+    // Called when the slime gets hit: even if it didn't see the player (e.g. hit from behind),
+    // it turns around and starts chasing
+    public void Alert()
+    {
+        if (player == null || rb == null) return;
+
+        Face(((Vector2)player.position - rb.position).normalized);
+        StartChase();
+    }
+
     void Chase()
     {
         // While chasing the slime is locked on, so only range and walls can break sight

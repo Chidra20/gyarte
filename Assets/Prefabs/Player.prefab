@@ -221,6 +221,7 @@ GameObject:
   - component: {fileID: 8686445700149931351}
   - component: {fileID: 6524901461590468648}
   - component: {fileID: 1131256879405535703}
+  - component: {fileID: 5269859253344163817}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -429,3 +430,44 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5269859253344163817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6672797255328993099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433ece252bea9e94e8e7593c6cc275ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  attackDamage: 1
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  meleeKey: 106
+  attackPoint: {fileID: 0}
+  attackRange: 0.75
+  attackPointDistance: 0.95
+  attackPointSidewaysHeight: -0.15
+  swingHitTime: 0.18
+  swingDuration: 0.44
+  showHitbox: 0
+  hitboxColor: {r: 1, g: 0.1, b: 0.1, a: 0.9}
+  hitboxFlashColor: {r: 1, g: 0.9, b: 0.2, a: 1}
+  lineWidth: 0.08
+  fillAlpha: 0.25
+  flashFillAlpha: 0.6
+  flashTime: 0.15
+  castKey: 111
+  maxSpellCharges: 2
+  spellRechargeTime: 5
+  projectilePrefab: {fileID: 4401248506713191577, guid: 15c186a3dbc2a30469e01fbff7abe189, type: 3}
+  spellFramesPerSecond: 18
+  spellTotalFrames: 11
+  fireStartFrame: 3
+  lockMovementWhileCasting: 0
+  handDistance: 0.4
+  handHeight: -0.07
+  sideHandOffset: 0.25

@@ -197,8 +197,9 @@ MonoBehaviour:
   maxHealth: 1
   partnerSlime: {fileID: 0}
   bigSlimePrefab: {fileID: 5737207155772883977, guid: d5e09d9fb9e06f34f9b2d397892ccbf7, type: 3}
-  moveSpeed: 1.5
-  fuseDelay: 3
+  moveSpeed: 0.5
+  fuseDelay: 1
+  mergeDistance: 0.2
 --- !u!114 &3735292651908798419
 MonoBehaviour:
   m_ObjectHideFlags: 0

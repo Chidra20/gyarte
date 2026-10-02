@@ -12,7 +12,9 @@ public class BabySlime : MonoBehaviour
 
     [Header("Fusion Delay")]
     [Tooltip("Time in seconds before the baby slimes can merge back together.")]
-    public float fuseDelay = 3.0f; // Adjust this in the Inspector
+    public float fuseDelay = 0f; // Adjust this in the Inspector
+    [Tooltip("How close the two babies need to be to merge.")]
+    public float mergeDistance = 0.2f;
     private float timer;
     private bool hasMerged;
 
@@ -38,7 +40,24 @@ public class BabySlime : MonoBehaviour
                 partnerSlime.transform.position,
                 moveSpeed * Time.deltaTime
             );
+
+            // Both babies are kinematic, and Unity doesn't report trigger contacts between two
+            // kinematic bodies, so check for overlap directly instead of waiting for OnTrigger
+            if (timer <= 0 && IsTouchingPartner())
+            {
+                MergeBackIntoBigSlime();
+            }
         }
+    }
+
+    // True as soon as the two babies' bodies overlap
+    bool IsTouchingPartner()
+    {
+        Collider2D mine = GetComponent<Collider2D>();
+        Collider2D theirs = partnerSlime.GetComponent<Collider2D>();
+        if (mine != null && theirs != null && mine.Distance(theirs).isOverlapped) return true;
+
+        return Vector2.Distance(transform.position, partnerSlime.transform.position) <= mergeDistance;
     }
 
     public void TakeDamage(int damage)
