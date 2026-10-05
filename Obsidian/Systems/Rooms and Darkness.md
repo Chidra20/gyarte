@@ -29,7 +29,7 @@ Consequences of this design:
 
 ## Two ways rooms get made
 
-**By hand (SampleScene).** Room objects are placed and scaled in the editor over a hand-built layout.
+**By hand.** Room objects are placed and scaled in the editor over a hand-built layout. This was the first version, built in `SampleScene`, which was deleted on 5 Oct 2026; the method still works in any scene.
 
 **By the generator.** The [[Level Randomizer]] creates one room object per generated room, sized to cover the floor and its walls. Neighbouring rooms touch exactly, so there is no lit gap between them. The start room is lit immediately; the rest start dark.
 

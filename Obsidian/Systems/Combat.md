@@ -4,7 +4,7 @@ The player's two attacks and the health that enemies lose to them. Part of the [
 
 **Files:** `Assets/Prefabs/Scripts/PlayerAttack.cs`, `Assets/Prefabs/Scripts/FireProjectile.cs`, `Assets/Prefabs/FireProjectile.prefab`, `Assets/Prefabs/Enemies/Slime/Scripts/EnemyHeatlh.cs` (class `EnemyHealth`; the file name is misspelled), `Assets/Animations/Swing.anim`, `Assets/Animations/FireSpell.anim`, art in `Assets/Art/Attacks/`
 
-Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the input actions and two bugs in `EnemyHealth` were fixed. Damage flows one way only: the player can hurt slimes, nothing can hurt the player yet.
+Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the input actions and two bugs in `EnemyHealth` were fixed. Since 5 Oct 2026 damage goes both ways: slimes hurt the player by touching them ([[Slime Enemy]]).
 
 ## The two attacks
 
@@ -15,9 +15,11 @@ Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the i
 | `Attack` | Square | X | J | Scythe swing |
 | `Projectile` | Triangle | Y | Space | Fire spell |
 
-**Scythe swing (melee).** Pressing the attack button plays the `Swing` animation. Part-way through, at the moment the scythe is in front of the character, everything on the `Enemy` layer inside a circle in front of the player takes damage. The circle follows an `Attack` object that the script creates and keeps in front of the player every frame. The swing cannot be repeated until the animation has finished.
+**Scythe swing (melee).** Pressing the attack button plays the `Swing` animation, unless the swing is still on **cooldown**. The cooldown starts when a swing starts and is a little longer than the animation, so the swing cannot be spammed. Part-way through, at the moment the scythe is in front of the character, everything on the `Enemy` layer inside a circle in front of the player takes damage. The circle follows an `Attack` object that the script creates and keeps in front of the player every frame. The swing cannot be repeated until the animation has finished.
 
-**Fire spell (ranged).** Pressing the projectile button plays the `FireSpell` animation and, on the frame the fire leaves the hand, spawns a `FireProjectile`. The spell uses charges: a small number can be stored, each cast spends one, and they come back one at a time on a timer. `SpellCharges` and `RechargeProgress` are exposed for a future HUD; nothing displays them yet.
+**Fire spell (ranged).** Pressing the projectile button plays the `FireSpell` animation and, on the frame the fire leaves the hand, spawns a `FireProjectile`. The spell uses charges: a small number can be stored, each cast spends one, and they come back one at a time on a timer. The attack corner of the [[HUD]] shows the charges and the time until the next one.
+
+**Why an attack is blocked.** `PlayerAttack` names the reason an attack can't be used right now: the other attack is still playing ("Busy"), the swing is on "Cooldown", or the spell has "No charges". The [[HUD]] shows these reasons. Abilities can change the cooldown and the number of charges ([[Inventory and Abilities]]).
 
 While either attack is playing, `PlayerMovement` keeps the facing direction fixed and holds the run animations off so the attack animation is not interrupted. The player can still move during an attack unless `lockMovementWhileCasting` is turned on.
 
@@ -36,22 +38,26 @@ Damage, swing range, the hitbox display and the spell's charges can all be chang
 - It only damages **enemies that existed when it was cast**. Baby slimes that appear mid-flight are ignored, so one fireball cannot kill a big slime and then its babies in the same pass.
 - It carries a small 2D light as a glow. Scenes without any 2D light render fully lit, and adding the first light would turn everything else dark, so the projectile creates a plain white global light the first time one is launched in a scene that has none.
 
-## Enemy health
+## Health
 
-`EnemyHealth` is the script the baby slime prefab was waiting for since Week 1. It holds max and current health, flashes the sprite on a hit, and decides what death means:
-
-- On a **big slime** it calls `BigSlime.DieAndSplit()`.
-- On anything else it destroys the object. This is how baby slimes die.
-- A non-lethal hit on a big slime also calls `BigSlime.Alert()`, so a slime hit from behind turns and chases ([[Slime Enemy]]).
+**`Health`** (`Assets/Prefabs/Scripts/Health.cs`, added 5 Oct 2026) is the one health component for everything that can be hurt. It only counts and reports. It holds max and current health and an optional invulnerability window after each hit, and it raises events when health changes, when a hit lands and when the owner dies. What a hit or a death *means* is left to whoever listens. A god-mode switch for the [[Test Menu]] makes it ignore hits.
 
 Two details protect it from same-frame trouble:
 
-- **It can only die once.** Destroying an object takes effect at the end of the frame, so two lethal hits landing together (a fireball and a swing) used to make a big slime split twice, into four babies. A "dead" flag now ignores every hit after the fatal one.
-- **Health is set as soon as the enemy exists**, not on its first frame. A slime created by a merge can be hit in the very frame it appears, and used to have no health yet at that moment.
+- **It can only die once.** Destroying an object takes effect at the end of the frame, so two lethal hits landing together (a fireball and a swing) used to make a big slime split twice, into four babies. After the fatal hit, every further hit is ignored.
+- **Health is set as soon as the object exists**, not on its first frame. A slime created by a merge can be hit in the very frame it appears.
+
+## Enemy health
+
+`EnemyHealth` sits next to `Health` on both slime prefabs (it adds `Health` automatically). The health amount itself now lives on `Health`. `EnemyHealth` is the enemy's reaction to it:
+
+- A non-lethal hit flashes the sprite, and on a big slime it calls `BigSlime.Alert()`, so a slime hit from behind turns and chases ([[Slime Enemy]]).
+- At zero health, a **big slime** calls `BigSlime.DieAndSplit()`; anything else is destroyed. This is how baby slimes die.
+- The attacks still call `EnemyHealth.TakeDamage`, which passes the hit on to `Health`.
 
 `SetMaxHealth()` gives a single enemy a different amount of health from its prefab. The [[Test Menu]] uses it when spawning.
 
-It is slime-aware rather than general: it looks for a `BigSlime` on the same object. The Week 2 plan was one `Health` component shared with the player; see [[Roadmap]].
+**The list of living enemies.** `EnemyHealth` keeps a shared count of every enemy that is alive, babies included. The wave spawner uses it to tell when a wave is cleared ([[Roadmap]]), and the [[Test Menu]] shows it. The order matters: an enemy joins the list as soon as it exists, and a dying big slime leaves it only *after* its babies have joined. A two-babies-merge likewise creates the new big slime before the babies are removed. So a split or a merge never makes the count touch zero, which would otherwise look like a cleared wave. Enemies destroyed without the usual callbacks are dropped from the list the next time it is read.
 
 ## Verified in Play mode (2 Oct 2026, `Test AI enemy`)
 
@@ -79,4 +85,3 @@ Not tested: the fireball stopping at a wall.
 ## How it can progress
 
 - Turn `EnemyHealth` into a general `Health` with a death event, so the player and future enemies can share it.
-- A HUD for spell charges, and the other half of combat: the slime hurting the player ([[Roadmap]]).

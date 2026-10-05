@@ -41,6 +41,7 @@ public class TestMenu : MonoBehaviour
     private const float LabelWidth = 150f;
 
     private PlayerAttack attack;
+    private Health playerHealth;
     private Rect windowRect = new Rect(10f, 10f, 350f, 600f);
     private Vector2 scroll;
     private GUIStyle headerStyle;
@@ -57,6 +58,11 @@ public class TestMenu : MonoBehaviour
     private bool unlimitedSpell;
     private bool showAllRooms;
 
+    // Applied to every living enemy and to each one spawned from the menu
+    private int contactDamage = 1;
+    private float contactInterval = 1f;
+    private float contactKnockback = 8f;
+
     void Start()
     {
         if (player == null)
@@ -64,12 +70,26 @@ public class TestMenu : MonoBehaviour
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
             if (playerObject != null) player = playerObject.GetComponent<PlayerMovement>();
         }
-        if (player != null) attack = player.GetComponent<PlayerAttack>();
+        if (player != null)
+        {
+            attack = player.GetComponent<PlayerAttack>();
+            playerHealth = player.GetComponent<Health>();
+        }
         if (levelRandomizer == null) levelRandomizer = FindAnyObjectByType<LevelRandomizer>();
         if (roomManager == null) roomManager = FindAnyObjectByType<RoomManager>();
 
         IsOpen = openOnStart;
         SelectSpawnable(0);
+
+        // Start the sliders at what the prefab normally does
+        ContactDamage prefabContact = spawnables != null && spawnables.Length > 0 && spawnables[0].prefab != null
+            ? spawnables[0].prefab.GetComponent<ContactDamage>() : null;
+        if (prefabContact != null)
+        {
+            contactDamage = prefabContact.damage;
+            contactInterval = prefabContact.damageInterval;
+            contactKnockback = prefabContact.knockbackSpeed;
+        }
     }
 
     void Update()
@@ -86,7 +106,8 @@ public class TestMenu : MonoBehaviour
 
         if (!IsOpen) return;
 
-        enemyCount = FindObjectsByType<EnemyHealth>(FindObjectsInactive.Exclude).Length;
+        // The same count the wave spawner uses to decide a wave is cleared
+        enemyCount = EnemyHealth.AliveCount;
         HandleMapClick();
     }
 
@@ -185,7 +206,25 @@ public class TestMenu : MonoBehaviour
         if (GUILayout.Button("Remove all")) RemoveAllEnemies();
         GUILayout.EndHorizontal();
 
-        GUILayout.Label("Enemies cannot deal damage yet, so there is no enemy damage setting.");
+        GUILayout.Label("Touching the player:");
+        int oldDamage = contactDamage;
+        float oldInterval = contactInterval, oldKnockback = contactKnockback;
+        IntSlider("Contact damage", ref contactDamage, 0, 10);
+        Slider("Seconds between hits", ref contactInterval, 0.1f, 5f);
+        Slider("Knockback speed", ref contactKnockback, 0f, 20f);
+        if (oldDamage != contactDamage || oldInterval != contactInterval || oldKnockback != contactKnockback)
+        {
+            foreach (EnemyHealth enemy in EnemyHealth.Alive) ApplyContactSettings(enemy.gameObject);
+        }
+    }
+
+    void ApplyContactSettings(GameObject enemy)
+    {
+        ContactDamage contact = enemy.GetComponent<ContactDamage>();
+        if (contact == null) return;
+        contact.damage = contactDamage;
+        contact.damageInterval = contactInterval;
+        contact.knockbackSpeed = contactKnockback;
     }
 
     // Start the health slider at whatever the chosen prefab normally has
@@ -239,6 +278,7 @@ public class TestMenu : MonoBehaviour
             GameObject enemy = Instantiate(spawnable.prefab, new Vector3(spot.x, spot.y, z), Quaternion.identity);
             EnemyHealth health = enemy.GetComponent<EnemyHealth>();
             if (health != null) health.SetMaxHealth(spawnHealth);
+            ApplyContactSettings(enemy);
         }
 
         status = "Spawned " + spawnCount + " x " + spawnable.name + " with " + spawnHealth + " health.";
@@ -332,10 +372,32 @@ public class TestMenu : MonoBehaviour
 
         Slider("Move speed", ref player.moveSpeed, 1f, 15f);
 
+        if (playerHealth != null)
+        {
+            GUILayout.Label("Health: " + playerHealth.CurrentHealth + " / " + playerHealth.maxHealth + (playerHealth.IsDead ? "  (dead)" : ""));
+
+            int max = playerHealth.maxHealth;
+            IntSlider("Max health", ref max, 1, 50);
+            if (max != playerHealth.maxHealth) playerHealth.SetMaxHealth(max, false);
+
+            int current = playerHealth.CurrentHealth;
+            IntSlider("Health", ref current, 1, playerHealth.maxHealth);
+            if (current != playerHealth.CurrentHealth) SetPlayerHealth(current);
+
+            Slider("Hurt immunity seconds", ref playerHealth.invulnerableTime, 0f, 3f);
+            playerHealth.GodMode = GUILayout.Toggle(playerHealth.GodMode, " God mode (no damage)");
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Heal to full")) SetPlayerHealth(playerHealth.maxHealth);
+            if (GUILayout.Button("Take 1 damage")) playerHealth.TakeDamage(1);
+            GUILayout.EndHorizontal();
+        }
+
         if (attack == null) return;
 
         IntSlider("Attack damage", ref attack.attackDamage, 1, 20);
         Slider("Swing range", ref attack.attackRange, 0.25f, 3f);
+        Slider("Swing cooldown", ref attack.meleeCooldown, 0f, 3f);
         attack.showHitbox = GUILayout.Toggle(attack.showHitbox, " Show swing hitbox");
 
         GUILayout.Label("Fire spell charges: " + attack.SpellCharges + " / " + attack.maxSpellCharges);
@@ -345,6 +407,11 @@ public class TestMenu : MonoBehaviour
         attack.lockMovementWhileCasting = GUILayout.Toggle(attack.lockMovementWhileCasting, " Stand still while casting");
 
         if (GUILayout.Button("Refill fire spell")) attack.RefillSpellCharges();
+    }
+
+    void SetPlayerHealth(int value)
+    {
+        if (playerHealth != null) playerHealth.SetCurrentHealth(value);
     }
 
     // ---------- Level ----------

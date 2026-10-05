@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     public float moveSpeed = 5f;
+    [Tooltip("Multiplies moveSpeed. Abilities raise it; 1 is normal speed.")]
+    public float speedMultiplier = 1f;
 
     [Header("Input")]
     public InputActionReference moveAction;
@@ -25,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movement;
     private FacingDirection facingDirection = FacingDirection.Down;
     private PlayerAttack attack;
+    private Vector2 knockbackVelocity;
+    private float knockbackUntil;
 
     // Which way the player faces, as a direction (used to aim attacks)
     public Vector2 FacingVector => facingDirection switch
@@ -121,8 +125,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Pushes the player for a moment, e.g. when an enemy hits them. Steering is ignored meanwhile,
+    // otherwise the next physics step would overwrite the push with the stick input
+    public void ApplyKnockback(Vector2 velocity, float duration)
+    {
+        knockbackVelocity = velocity;
+        knockbackUntil = Time.time + duration;
+    }
+
     void FixedUpdate()
     {
-        rb.linearVelocity = movement * moveSpeed;
+        if (Time.time < knockbackUntil)
+        {
+            rb.linearVelocity = knockbackVelocity;
+            return;
+        }
+
+        rb.linearVelocity = movement * moveSpeed * speedMultiplier;
     }
 }

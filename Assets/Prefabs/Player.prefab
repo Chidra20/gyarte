@@ -222,7 +222,9 @@ GameObject:
   - component: {fileID: 6524901461590468648}
   - component: {fileID: 1131256879405535703}
   - component: {fileID: 5269859253344163817}
-  m_Layer: 0
+  - component: {fileID: 1311608086822324253}
+  - component: {fileID: 1649698435905745790}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -392,6 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 7
+  speedMultiplier: 1
   moveAction: {fileID: -2751290544756074067, guid: b5bf6cff86b4b7a428a8c0ae472d6060, type: 3}
   visual: {fileID: 3242160664165120928}
   facingObject: {fileID: 4848773914714209541}
@@ -471,3 +474,32 @@ MonoBehaviour:
   handDistance: 0.4
   handHeight: -0.07
   sideHandOffset: 0.25
+--- !u!114 &1311608086822324253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6672797255328993099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4930fb60d42901548bb324da0ed0aa33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 10
+  invulnerableTime: 0.8
+--- !u!114 &1649698435905745790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6672797255328993099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b31febdea3d33947b271b91bfe6abe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHurtFlash
+  sprite: {fileID: 0}
+  blinkRate: 12
+  blinkAlpha: 0.3

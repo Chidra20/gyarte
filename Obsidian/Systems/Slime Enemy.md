@@ -39,7 +39,7 @@ Selecting a slime in the editor draws its ranges, vision cone, patrol area and c
 
 ## Splitting and merging
 
-Both prefabs carry an `EnemyHealth` component ([[Combat]]). The big slime takes a couple of hits; a baby dies in one.
+Both prefabs carry `Health` and `EnemyHealth` components ([[Combat]]); the amount of health is set on `Health`. The big slime takes a couple of hits; a baby dies in one.
 
 - When the big slime's health runs out, `EnemyHealth` calls `BigSlime.DieAndSplit()`, which spawns two baby slimes side by side, links them as partners and destroys the big slime.
 - Each `BabySlime` drifts toward its partner. After `fuseDelay` seconds, touching the partner spawns a new big slime and destroys both babies. A guard makes sure only one of the two triggers the merge.
@@ -48,10 +48,18 @@ Both prefabs carry an `EnemyHealth` component ([[Combat]]). The big slime takes 
 
 The intended fight: kill the big slime, then kill at least one baby before the pair reunites. The babies are slow and the merge delay is short, so the window is about a second. This loop was played through in Play mode on 2 Oct 2026.
 
+## Hurting the player
+
+Both slimes have a `ContactDamage` component. Every frame it checks whether the player is within a small radius of the slime. If so, it deals damage, at most once per interval, and knocks the player away ([[Player]]). The player's hurt immunity stops a crowd of slimes from draining health all at once.
+
+The check is an overlap test rather than a collision, because slimes and the player no longer collide at all. The `Player` and `Enemy` layers ignore each other. This also fixed the old problem of a chasing slime shoving the player around: its body used to be a solid kinematic collider wider than its stopping distance.
+
+Verified on 5 Oct 2026 in `testing the new thing`. With a slime next to a still player, health dropped by one about once per second, and each hit pushed the player about a unit until the player was pinned against a wall.
+
+Damage, interval and knockback can be changed live from the [[Test Menu]].
+
 ## What is missing
 
-- **The slime cannot hurt the player.** Chase ends with it standing next to them.
-- **The slime shoves the player.** Its body is a solid kinematic collider wider than `stopDistance`, so a chasing slime pushes the player along instead of stopping. Seen in the 2 Oct play test, where a player standing still was carried several units.
 - **Baby slimes ignore walls.** They move by setting their position directly.
 - **A merged big slime starts fresh:** full health, new patrol home, no memory of the player.
 - **Unused baby health.** `BabySlime` keeps its own `maxHealth` and `TakeDamage()` from before `EnemyHealth` existed; nothing calls them.
@@ -65,7 +73,6 @@ The intended fight: kill the big slime, then kill at least one baby before the p
 
 ## How it can progress
 
-- **Contact damage** is the remaining Week 2 work on the slime's side: hurt the player on a timer when the chase reaches them, with a knockback ([[Roadmap]]).
 - **Reuse the brain.** Patrol, chase and search are not slime-specific. Pulling them into a base enemy class would let new enemy types change only speed, sight and attack.
 - **Babies that path** using the same pathfinder instead of drifting through walls.
 - **Room awareness:** stay idle until the player enters the slime's room.

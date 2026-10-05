@@ -23,7 +23,9 @@ At runtime `PlayerAttack` adds a third child, `Attack`, which marks the centre o
 
 1. `Update` reads the `Move` action (WASD or left stick) as a 2D vector and normalizes it.
 2. The dominant axis picks one of four facing directions. Facing only changes while there is input, so the player keeps looking the way they last moved. It also does not change while an attack is playing, so a swing or cast finishes in the direction it started.
-3. `FixedUpdate` sets the body's velocity to direction × `moveSpeed`.
+3. `FixedUpdate` sets the body's velocity to direction × `moveSpeed` × `speedMultiplier`. The multiplier is 1 normally; abilities raise it ([[Inventory and Abilities]]).
+
+**Knockback.** `ApplyKnockback` pushes the player at a set velocity for a short time. Meanwhile `FixedUpdate` ignores the stick, because otherwise the next physics step would overwrite the push. Enemies use it when they hit the player ([[Slime Enemy]]).
 
 `FacingVector` exposes the facing direction to other scripts; [[Combat]] uses it to aim.
 
@@ -32,6 +34,14 @@ Move speed can be changed while playing from the [[Test Menu]].
 Because the input is normalized, speed is always full or zero. A slight stick tilt moves at full speed.
 
 While the game is paused (time scale 0) `Update` returns early, so the character keeps its pose instead of turning on the spot. See [[Menus and Game Flow]].
+
+## Health
+
+The player has a `Health` component, the same one enemies use ([[Combat]]). It has a short **hurt immunity** after each hit: another hit inside that window does not count. While it lasts, `PlayerHurtFlash` blinks the sprite so this is visible. The amount of health and the length of the window are set on the prefab and can be changed from the [[Test Menu]], which also has god mode.
+
+What happens at zero health is up to the scene. In the test scenes nothing happens; the player just stays at zero. In the game loop it ends the run ([[Roadmap]]).
+
+**The `Player` layer.** The player is on its own physics layer, and that layer does not collide with the `Enemy` layer. Enemies therefore pass through the player instead of pushing it, and damage comes from the enemies' own overlap checks rather than from collisions.
 
 ## How animation works
 
@@ -64,7 +74,6 @@ Two more states, `Swing` and `FireSpell`, are entered from "Any State" by the `S
 ## How it can progress
 
 - **Attack animations per direction**; the swing and the cast each use one clip for all four.
-- **Health and hurt feedback** once enemies can deal damage.
 - **Analog speed** by dropping the normalization for stick input, if walking slowly should be possible.
 - **More actions** (dash, interact) as extra entries in the input actions asset.
 - The `PlayerInput` component on the prefab is unused; the script reads the action directly. Remove it or switch to it, but not both.
