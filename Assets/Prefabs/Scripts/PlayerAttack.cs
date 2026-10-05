@@ -24,6 +24,8 @@ public class PlayerAttack : MonoBehaviour
     public float swingHitTime = 0.18f;
     [Tooltip("Length of the Swing animation. You can't swing again or cast until it ends.")]
     public float swingDuration = 0.44f;
+    [Tooltip("Seconds from the start of one swing until the next one is allowed. Keep it at least as long as swingDuration.")]
+    public float meleeCooldown = 0.6f;
 
     [Header("Melee Hitbox Display")]
     public bool showHitbox = false;
@@ -66,12 +68,37 @@ public class PlayerAttack : MonoBehaviour
     public int SpellCharges { get; private set; }
     // 0 to 1 progress toward the next charge (stays 0 while full)
     public float RechargeProgress => SpellCharges >= maxSpellCharges ? 0f : rechargeTimer / spellRechargeTime;
+    public float SecondsToNextCharge => SpellCharges >= maxSpellCharges ? 0f : Mathf.Max(0f, spellRechargeTime - rechargeTimer);
+
+    public float MeleeCooldownRemaining => Mathf.Max(0f, nextSwingTime - Time.time);
+    // 1 right after a swing, 0 when the swing is ready
+    public float MeleeCooldownFraction => meleeCooldown <= 0f ? 0f : Mathf.Clamp01(MeleeCooldownRemaining / meleeCooldown);
+
+    // Why an attack can't be used right now, for the HUD. Empty when it is ready
+    public string MeleeBlockedReason => MeleeReason(IsCasting, MeleeCooldownRemaining);
+    public string SpellBlockedReason => SpellReason(IsSwinging, IsCasting, SpellCharges);
+
+    // "Busy" means the other attack (or this cast) is still playing
+    public static string MeleeReason(bool casting, float cooldownRemaining)
+    {
+        if (casting) return "Busy";
+        if (cooldownRemaining > 0f) return "Cooldown";
+        return "";
+    }
+
+    public static string SpellReason(bool swinging, bool casting, int charges)
+    {
+        if (swinging || casting) return "Busy";
+        if (charges <= 0) return "No charges";
+        return "";
+    }
 
     private PlayerMovement movement;
     private Transform visual;
     private Animator animator;
     private SpriteRenderer playerSprite;
     private float rechargeTimer;
+    private float nextSwingTime;
 
     private const int CircleSegments = 40;
     private LineRenderer hitboxLine;
@@ -120,15 +147,24 @@ public class PlayerAttack : MonoBehaviour
         RechargeSpell();
         UpdateAttackPoint();
 
-        if (meleeAction != null && meleeAction.action.WasPressedThisFrame() && !IsAttacking)
-        {
-            StartCoroutine(Swing());
-        }
+        if (meleeAction != null && meleeAction.action.WasPressedThisFrame()) TryMelee();
+        if (castAction != null && castAction.action.WasPressedThisFrame()) TryCast();
+    }
 
-        if (castAction != null && castAction.action.WasPressedThisFrame() && !IsAttacking && SpellCharges > 0)
-        {
-            StartCoroutine(CastFireSpell());
-        }
+    // Public so tests and tools can trigger the attacks the same way the buttons do
+    public bool TryMelee()
+    {
+        if (IsSwinging || MeleeBlockedReason != "") return false;
+        nextSwingTime = Time.time + Mathf.Max(meleeCooldown, swingDuration);
+        StartCoroutine(Swing());
+        return true;
+    }
+
+    public bool TryCast()
+    {
+        if (SpellBlockedReason != "") return false;
+        StartCoroutine(CastFireSpell());
+        return true;
     }
 
     Vector2 Facing()
@@ -267,6 +303,19 @@ public class PlayerAttack : MonoBehaviour
             rechargeTimer -= spellRechargeTime;
             SpellCharges++;
         }
+    }
+
+    // Used by abilities. fill: also top the current charges up to the new maximum
+    public void SetMaxSpellCharges(int max, bool fill)
+    {
+        maxSpellCharges = Mathf.Max(1, max);
+        SpellCharges = fill ? maxSpellCharges : Mathf.Min(SpellCharges, maxSpellCharges);
+    }
+
+    // Adds charges right away, never above the maximum
+    public void AddSpellCharges(int amount)
+    {
+        SpellCharges = Mathf.Clamp(SpellCharges + amount, 0, maxSpellCharges);
     }
 
     // Fills every charge back up at once

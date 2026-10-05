@@ -32,11 +32,13 @@ The window can be dragged by its title bar and scrolls when it is taller than th
 
 An enemy is never spawned inside a wall; the status line says so instead. Clicks on the window itself or on the normal UI do not count as clicks on the map.
 
-There is **no enemy damage setting**, because enemies cannot hurt the player yet ([[Roadmap]]). The damage that exists is the player's, below. When slimes get contact damage, its amount belongs in this section.
+**Touching the player:** contact damage, seconds between hits and knockback speed ([[Slime Enemy]]). Changes apply to every living enemy at once and to every enemy spawned from the menu afterwards. They don't change the prefab, so enemies created by a split or a merge use the prefab's values.
+
+The "alive" count in the header is the same list of living enemies the waves use ([[Combat]]).
 
 ### Player
 
-Move speed, attack damage (used by both the swing and the fireball), swing range, a switch to show the swing's hitbox, the fire spell's maximum charges and recharge time, unlimited fire spell, standing still while casting, and a button to refill the spell. See [[Player]] and [[Combat]].
+Health (current and max, shown and adjustable; setting it can never kill), hurt immunity seconds, god mode, heal to full, take 1 damage. Then move speed, attack damage (used by both the swing and the fireball), swing range, swing cooldown, a switch to show the swing's hitbox, the fire spell's maximum charges and recharge time, unlimited fire spell, standing still while casting, and a button to refill the spell. See [[Player]] and [[Combat]].
 
 ### Level
 

@@ -23,6 +23,10 @@ Where the project goes next. The week-by-week record is in [[Weekly]]; back to [
 
 Each of these gets its controls in the [[Test Menu]] as it is built: enemy damage, player health, and so on.
 
+### Planned 5 Oct 2026: the Demo game loop
+
+Items 1–4 above are now part of a bigger piece: a `Demo` scene that plays the whole loop. Random layout → survive the waves → find the key → open the gate → next random layout, with an ability choice every few levels, and death back to the Start Menu. It also adds cooldowns to both attacks with a HUD corner showing them, a general `Health`, and an inventory. The design is in `docs/superpowers/specs/2026-10-05-demo-game-loop-design.md`; this note and the system notes get updated as it is built.
+
 ### Decisions made by the first combat pass
 
 - **Attack style:** both. A melee swing and a ranged, piercing fire spell limited by charges.
@@ -57,9 +61,7 @@ These turn the separate tests into one game. Each is described in its system not
 
 | Issue | Where | Impact |
 |---|---|---|
-| Nothing can hurt the player | everywhere | The rest of the Week 2 goal |
 | Melee hits through walls | [[Combat]] | The swing's hit circle has no wall check |
-| Chasing slime shoves the player | [[Slime Enemy]] | The player is carried along instead of the slime stopping; goes away with contact damage and knockback |
 | Baby slimes move through walls | [[Slime Enemy]] | Now visible in play, since splitting works |
 | Pathfinder keeps old walls after a level rebuild | [[Pathfinding]] | Blocks slimes that live through a rebuild. The [[Test Menu]] sidesteps it by removing enemies when it randomizes; the Randomize button on the canvas does not |
 | Test menu is in the build | [[Test Menu]] | Nothing strips it from a released game yet |
@@ -75,7 +77,6 @@ These turn the separate tests into one game. Each is described in its system not
 - Rename `EnemyHeatlh.cs` to `EnemyHealth.cs` inside Unity.
 - Remove the unused health fields and `TakeDamage` from `BabySlime`, and its trigger callbacks that never fire.
 - Remove the `Debug.Log` on every hit in `EnemyHealth` once combat is settled.
-- Delete the duplicate `New Scene` files.
 
 ## Tooling note
 

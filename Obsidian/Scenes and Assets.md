@@ -4,15 +4,19 @@ What every scene, prefab and art source is for. Part of the [[Architecture]]; ba
 
 ## Scenes
 
-All in `Assets/Scenes/`.
+All in `Assets/Scenes/`. Each scene has one job:
 
 | Scene | Purpose | Notes |
 |---|---|---|
 | `Start Menu` | The scene the game opens with: Start, Settings, End | First in Build Settings. See [[Menus and Game Flow]]. |
-| `SampleScene` | The original demo: three hand-made rooms with the room darkness logic | Third in Build Settings. Built from placeholder squares. Has the only Global Light 2D. |
-| `Test AI enemy` | Slime and [[Combat]] test room | Tilemap floor, box colliders tagged `wall`, one BigSlime |
-| `testing the new thing` | [[Level Randomizer]] test, and the scene Start loads | Second in Build Settings. Generated level, darkness, Randomize button, pause menu, and the [[Test Menu]] (U) |
-| `New Scene`, `New Scene 1` | Early tilemap room | Were identical copies when checked; no `wall` tags, so not usable with the slime |
+| `testing the new thing` | **The sandbox.** Every new feature is first tried out here on its own, through the [[Test Menu]] (U) | Second in Build Settings and, until the Demo scene exists, the scene Start loads. Generated level, darkness, Randomize button, pause menu |
+| `Test AI enemy` | **Enemy AI.** Slime and [[Combat]] test room | Tilemap floor, box colliders tagged `wall`, one BigSlime |
+
+A fourth scene, `Demo`, is planned. It is where the actual game is tested, with the full loop as a player would play it (see [[Roadmap]]).
+
+Cleaned up on 5 Oct 2026: `SampleScene` (the Week 1 hand-made rooms demo, which the randomizer replaced) and the duplicate early tilemap rooms `New Scene` and `New Scene 1` were deleted. They are still in git history.
+
+`Assets/Settings/Scenes/URP2DSceneTemplate.unity` is not a game scene. It is the template Unity uses when a new scene is created.
 
 Every gameplay scene carries its own copy of the same trio: Main Camera (with a Cinemachine brain), a `CinemachineCamera` prefab instance tracking the player, and a `Player` prefab instance.
 
@@ -72,7 +76,7 @@ The [[Test Menu]] is the exception: its toggle key is a plain keyboard key set o
 ## Project settings worth knowing
 
 - **Tags:** `wall` (custom) and the built-in `Player`.
-- **Layers:** `Enemy` (layer 7), used by the slime prefabs and searched by the player's attacks.
+- **Layers:** `Player` (layer 6) on the player, and `Enemy` (layer 7), used by the slime prefabs and searched by the player's attacks. The two layers do not collide with each other (Physics 2D collision matrix), so slimes pass through the player instead of pushing it.
 - **Rendering:** URP with the 2D renderer. Scenes without any 2D light render fully lit. The fireball adds a global light at runtime in such scenes so its glow does not darken them.
 - **Input handling:** both the old and new input systems are enabled. Gameplay only uses the new one.
 
@@ -82,6 +86,5 @@ The [[Test Menu]] is the exception: its toggle key is a plain keyboard key set o
 - `RoomsManager.cs` contains a class named `RoomManager`.
 - `EnemyHeatlh.cs` contains a class named `EnemyHealth`.
 - The folder `Pallates` is a misspelling of "Palettes".
-- The two `New Scene` files can likely be deleted.
 
 None of these break anything today. They are listed in [[Roadmap]] as cleanup.

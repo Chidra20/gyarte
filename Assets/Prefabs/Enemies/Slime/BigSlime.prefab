@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 1132466425628546055}
   - component: {fileID: 2771225923713109876}
   - component: {fileID: 2762159028840842426}
+  - component: {fileID: 5831725787526846066}
+  - component: {fileID: 8875455599421104414}
   m_Layer: 7
   m_Name: BigSlime
   m_TagString: Untagged
@@ -221,6 +223,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a5a317f9fbb15949b6f10c8dbfcf061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 2
   hitFlashColor: {r: 1, g: 0.45, b: 0.3, a: 1}
   hitFlashTime: 0.12
+--- !u!114 &5831725787526846066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5737207155772883977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4930fb60d42901548bb324da0ed0aa33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 2
+  invulnerableTime: 0
+--- !u!114 &8875455599421104414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5737207155772883977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d349dfcbd84d3a944a55aced44e336ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ContactDamage
+  damage: 1
+  damageInterval: 1
+  contactRadius: 0.55
+  playerLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  knockbackSpeed: 8
+  knockbackTime: 0.15

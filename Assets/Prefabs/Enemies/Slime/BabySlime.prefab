@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 2300106076002910086}
   - component: {fileID: 3170625259435763061}
   - component: {fileID: 3735292651908798419}
+  - component: {fileID: 4361423288636560566}
+  - component: {fileID: 2417333768372503536}
   m_Layer: 7
   m_Name: BabySlime
   m_TagString: Untagged
@@ -212,6 +214,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a5a317f9fbb15949b6f10c8dbfcf061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 1
   hitFlashColor: {r: 1, g: 0.45, b: 0.3, a: 1}
   hitFlashTime: 0.12
+--- !u!114 &4361423288636560566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8413997262935697380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4930fb60d42901548bb324da0ed0aa33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 1
+  invulnerableTime: 0
+--- !u!114 &2417333768372503536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8413997262935697380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d349dfcbd84d3a944a55aced44e336ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ContactDamage
+  damage: 1
+  damageInterval: 1
+  contactRadius: 0.55
+  playerLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  knockbackSpeed: 8
+  knockbackTime: 0.15
