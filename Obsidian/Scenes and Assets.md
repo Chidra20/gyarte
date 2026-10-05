@@ -8,11 +8,10 @@ All in `Assets/Scenes/`. Each scene has one job:
 
 | Scene | Purpose | Notes |
 |---|---|---|
-| `Start Menu` | The scene the game opens with: Start, Settings, End | First in Build Settings. See [[Menus and Game Flow]]. |
-| `testing the new thing` | **The sandbox.** Every new feature is first tried out here on its own, through the [[Test Menu]] (U) | Second in Build Settings and, until the Demo scene exists, the scene Start loads. Generated level, darkness, Randomize button, pause menu |
+| `Start Menu` | The scene the game opens with: Start, Settings, End | First in Build Settings. Start loads `Demo`. See [[Menus and Game Flow]]. |
+| `Demo` | **The game.** The full [[Game Loop]] as a player plays it: random levels, waves, key, gate, abilities, death back to the menu | Second in Build Settings. No level is saved in it; the loop builds one on load. Has the [[HUD]] and the [[Test Menu]] |
+| `testing the new thing` | **The sandbox.** Every new feature is first tried out here on its own, through the [[Test Menu]] (U) | Third in Build Settings. Generated level, darkness, Randomize button, pause menu, health label and attack corner |
 | `Test AI enemy` | **Enemy AI.** Slime and [[Combat]] test room | Tilemap floor, box colliders tagged `wall`, one BigSlime |
-
-A fourth scene, `Demo`, is planned. It is where the actual game is tested, with the full loop as a player would play it (see [[Roadmap]]).
 
 Cleaned up on 5 Oct 2026: `SampleScene` (the Week 1 hand-made rooms demo, which the randomizer replaced) and the duplicate early tilemap rooms `New Scene` and `New Scene 1` were deleted. They are still in git history.
 
@@ -29,7 +28,11 @@ Every gameplay scene carries its own copy of the same trio: Main Camera (with a 
 | `Assets/Prefabs/Enemies/Slime/BigSlime.prefab` | `Test AI enemy`; also spawned by merging baby slimes. See [[Slime Enemy]]. |
 | `Assets/Prefabs/Enemies/Slime/BabySlime.prefab` | Spawned by `BigSlime.DieAndSplit()`. |
 | `Assets/Prefabs/FireProjectile.prefab` | Spawned by the player's fire spell. A sprite with a small 2D light child for the glow. See [[Combat]]. |
-| `Assets/Prefabs/UI/Settings Panel.prefab` | `Start Menu` and `testing the new thing`. See [[Menus and Game Flow]]. |
+| `Assets/Prefabs/UI/Settings Panel.prefab` | `Start Menu`, `testing the new thing` and `Demo`. See [[Menus and Game Flow]]. |
+| `Assets/Prefabs/UI/Health Label.prefab`, `Attack Corner.prefab` | `testing the new thing` and `Demo`. See [[HUD]]. |
+| `Assets/Prefabs/UI/Loop HUD.prefab`, `Ability Choice.prefab` | `Demo`. See [[Game Loop]]. |
+| `Assets/Prefabs/Key.prefab`, `Gate.prefab` | Placed by the [[Game Loop]]; also from the [[Test Menu]]. Placeholder art from `Assets/Art/Placeholders/`. |
+| `Assets/Prefabs/Abilities/` | The ability scripts, their assets and `Default Ability Pool`. See [[Inventory and Abilities]]. |
 
 ## Art
 

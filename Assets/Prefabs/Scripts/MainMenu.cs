@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [Tooltip("Scene that Start loads. It has to be in the Build Settings scene list.")]
-    public string gameSceneName = "testing the new thing";
+    public string gameSceneName = "Demo";
     public SettingsMenu settings;
 
     public void StartGame()

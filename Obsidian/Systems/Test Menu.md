@@ -2,7 +2,7 @@
 
 A developer window for trying out everything the game has, live, without leaving Play mode. Part of the [[Architecture]]; back to [[Home]].
 
-**Files:** `Assets/Prefabs/Scripts/TestMenu.cs`, on the `Test Menu` object in the scene `testing the new thing`
+**Files:** `Assets/Prefabs/Scripts/TestMenu.cs`, on the `Test Menu` object in `testing the new thing` and in `Demo`
 
 Added on 2 Oct 2026.
 
@@ -19,6 +19,12 @@ It is separate from the pause menu ([[Menus and Game Flow]]) in two ways: it is 
 The window can be dragged by its title bar and scrolls when it is taller than the screen. A line at the bottom reports what the last action did, or why it did nothing.
 
 ## What is in it
+
+Sections only appear when the scene has what they control. The game loop and waves sections, for example, only appear in `Demo`.
+
+### Game loop
+
+Only in a scene with a `GameLoop` ([[Game Loop]]). It shows the level and state, and has buttons to kill all enemies, skip the wave, put the key next to the player, open the gate, jump to the gate, go to the next level, and open the ability choice right now (the level carries on afterwards). A slider sets how often abilities are offered.
 
 ### Enemies
 
@@ -39,6 +45,14 @@ The "alive" count in the header is the same list of living enemies the waves use
 ### Player
 
 Health (current and max, shown and adjustable; setting it can never kill), hurt immunity seconds, god mode, heal to full, take 1 damage. Then move speed, attack damage (used by both the swing and the fireball), swing range, swing cooldown, a switch to show the swing's hitbox, the fire spell's maximum charges and recharge time, unlimited fire spell, standing still while casting, and a button to refill the spell. See [[Player]] and [[Combat]].
+
+### Inventory
+
+Keys held, with buttons to give one or to place a key or a gate in front of the player, and the abilities held with their stacks. Every ability in the menu's ability pool has a button that adds it straight away; it is greyed out once at its maximum. See [[Inventory and Abilities]].
+
+### Waves
+
+Only shown in a scene with a `WaveSpawner`. It shows the current wave and the time to the next. There are buttons to start the waves for any level number, skip the current wave, or kill every enemy, and sliders for every wave setting: counts, growth per level, the breather, and the spawn spacing rules. See [[Game Loop]].
 
 ### Level
 

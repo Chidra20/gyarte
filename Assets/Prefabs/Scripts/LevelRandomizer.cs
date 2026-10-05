@@ -44,6 +44,9 @@ public class LevelRandomizer : MonoBehaviour
     [Tooltip("Moved back to the middle of the first room every time the level is randomized.")]
     public Transform player;
 
+    [Tooltip("Build a level when the scene starts if none is saved in it. Off when something else (the game loop) decides when to build.")]
+    public bool buildOnStart = true;
+
     [Header("Rooms")]
     public int minRooms = 3;
     public int maxRooms = 6;
@@ -90,10 +93,77 @@ public class LevelRandomizer : MonoBehaviour
     [Tooltip("Free cells kept around every pillar so the player can always walk past it.")]
     public int propSpacing = 2;
 
+    // The last level built: each room's floor area in cells, and which rooms a door joins.
+    // Room 0 is where the player starts. Empty until Randomize has run in this session.
+    public IReadOnlyList<RectInt> Rooms => rooms;
+    public IReadOnlyList<Vector2Int> RoomLinks => roomLinks;
+    public int StartRoomIndex => 0;
+
+    private readonly List<RectInt> rooms = new List<RectInt>();
+    private readonly List<Vector2Int> roomLinks = new List<Vector2Int>();
+
     void Start()
     {
         // Keep the level that was saved with the scene; only build one if there is nothing there
-        if (floorTilemap.GetUsedTilesCount() == 0) Randomize();
+        if (buildOnStart && floorTilemap.GetUsedTilesCount() == 0) Randomize();
+    }
+
+    // A random spot on a room's floor with no wall or pillar tile in the 3x3 cells around it,
+    // so a character placed there is not stuck. Tiles are checked rather than colliders because
+    // the wall collider is only rebuilt after a level is built.
+    public bool TryGetRandomFloorPoint(int roomIndex, out Vector2 point)
+    {
+        point = Vector2.zero;
+        if (roomIndex < 0 || roomIndex >= rooms.Count) return false;
+
+        RectInt room = rooms[roomIndex];
+        for (int attempt = 0; attempt < 20; attempt++)
+        {
+            var cell = new Vector3Int(Random.Range(room.xMin + 1, room.xMax - 1), Random.Range(room.yMin + 1, room.yMax - 1), 0);
+            if (!ClearAround(cell)) continue;
+
+            point = floorTilemap.GetCellCenterWorld(cell);
+            return true;
+        }
+        return false;
+    }
+
+    bool ClearAround(Vector3Int cell)
+    {
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector3Int near = cell + new Vector3Int(x, y, 0);
+                if (wallTilemap.HasTile(near) || !floorTilemap.HasTile(near)) return false;
+            }
+        }
+        return true;
+    }
+
+    // Which room a world position is in, counting the room's own walls (so a doorway belongs to a room). -1 if none
+    public int RoomIndexAt(Vector2 worldPoint)
+    {
+        Vector3Int cell = floorTilemap.WorldToCell(worldPoint);
+        var point = new Vector2Int(cell.x, cell.y);
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].Contains(point)) return i;
+        }
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (WithWalls(rooms[i]).Contains(point)) return i;
+        }
+        return -1;
+    }
+
+    // World position of a room's centre
+    public Vector2 RoomCenter(int roomIndex)
+    {
+        RectInt room = rooms[roomIndex];
+        Vector3 min = floorTilemap.CellToWorld(new Vector3Int(room.xMin, room.yMin, 0));
+        Vector3 max = floorTilemap.CellToWorld(new Vector3Int(room.xMax, room.yMax, 0));
+        return (min + max) / 2f;
     }
 
     public void Randomize()
@@ -103,7 +173,9 @@ public class LevelRandomizer : MonoBehaviour
         ClearRoomObjects();
 
         List<Door> doors = new List<Door>();
-        List<RectInt> rooms = LayOutRooms(doors);
+        roomLinks.Clear();
+        rooms.Clear();
+        rooms.AddRange(LayOutRooms(doors));
 
         foreach (RectInt room in rooms)
         {
@@ -136,7 +208,8 @@ public class LevelRandomizer : MonoBehaviour
         // Grow the level by attaching each new room to a random side of a room that is already there
         for (int attempt = 0; attempt < 200 && rooms.Count < roomCount; attempt++)
         {
-            RectInt from = rooms[Random.Range(0, rooms.Count)];
+            int fromIndex = Random.Range(0, rooms.Count);
+            RectInt from = rooms[fromIndex];
             Vector2Int size = RandomRoomSize();
             RectInt room;
             Door door;
@@ -171,6 +244,7 @@ public class LevelRandomizer : MonoBehaviour
             RectInt walls = WithWalls(room);
             if (rooms.Exists(other => WithWalls(other).Overlaps(walls))) continue;
 
+            roomLinks.Add(new Vector2Int(fromIndex, rooms.Count));
             rooms.Add(room);
             doors.Add(door);
         }

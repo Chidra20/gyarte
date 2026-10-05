@@ -8,7 +8,9 @@ The start menu, the pause menu, the shared settings panel, and how the game move
 
 ```mermaid
 flowchart LR
-    Menu[Start Menu scene] -->|Start| Game[testing the new thing]
+    Menu[Start Menu scene] -->|Start| Game[Demo]
+    Game -->|player dies| Died[You died]
+    Died -->|1.5 s| Menu
     Menu -->|End| Quit[Quit the game]
     Game -->|Esc| Pause[Pause menu]
     Pause -->|Resume or Esc| Game
@@ -67,14 +69,14 @@ The game scene has a third window, opened with U. It is a developer tool rather 
 
 ## Links to other systems
 
-- Start loads the scene built by the [[Level Randomizer]]. That scene keeps its saved level, so every run currently starts in the same layout until the Randomize button is pressed.
+- Start loads `Demo`, where the [[Game Loop]] builds a fresh random level on load, so every run is different. (Until 5 Oct 2026 Start loaded `testing the new thing` with its saved level.)
+- **Death** ends the run: the game freezes, "You died" shows for 1.5 seconds, then the Start Menu loads at normal speed ([[Game Loop]]).
+- **Escape is ignored** while the ability choice or the death screen is up, so the pause menu cannot open on top of them.
 - Pausing freezes the [[Player]] and the [[Slime Enemy]] through the time scale; neither needs pause code of its own beyond the player's one-line guard.
 - UI is drawn above everything, including room darkness ([[Rooms and Darkness]]).
 
 ## How it can progress
 
-- **New level per run:** have Start generate a fresh level instead of loading the saved one.
-- **Player death** (Week 2) can reuse this flow: show a "You died" panel with the same End Game button. See [[Roadmap]].
 - **More settings:** separate music and effects volume once audio exists, key rebinding, resolution.
 - **Gamepad:** the menus can already be navigated with a stick, but nothing selects the first button when a menu opens, and only Escape opens the pause menu.
 - **Art pass:** the title is the project name in the default font, and buttons use Unity's built-in sprite.

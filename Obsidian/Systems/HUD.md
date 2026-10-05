@@ -34,4 +34,4 @@ The corner reads everything from `PlayerAttack` every frame. The reasons are dec
 
 - Icons and art for the slots; a hit flash on the health label.
 - More slots as abilities that can be used actively are added ([[Inventory and Abilities]]).
-- The rest of the game loop HUD (level, wave, objective, inventory) is added with the [[Game Loop]].
+- The loop's own HUD (level and wave, objective, inventory, banner, death screen) is described in [[Game Loop]]. It exists only in `Demo`.

@@ -57,7 +57,7 @@ Two details protect it from same-frame trouble:
 
 `SetMaxHealth()` gives a single enemy a different amount of health from its prefab. The [[Test Menu]] uses it when spawning.
 
-**The list of living enemies.** `EnemyHealth` keeps a shared count of every enemy that is alive, babies included. The wave spawner uses it to tell when a wave is cleared ([[Roadmap]]), and the [[Test Menu]] shows it. The order matters: an enemy joins the list as soon as it exists, and a dying big slime leaves it only *after* its babies have joined. A two-babies-merge likewise creates the new big slime before the babies are removed. So a split or a merge never makes the count touch zero, which would otherwise look like a cleared wave. Enemies destroyed without the usual callbacks are dropped from the list the next time it is read.
+**The list of living enemies.** (The design said enemies would join and leave the list when switched on and off. They join when created and leave when destroyed instead, so a switched-off enemy would still count. Nothing switches enemies off today.) `EnemyHealth` keeps a shared count of every enemy that is alive, babies included. The wave spawner uses it to tell when a wave is cleared ([[Roadmap]]), and the [[Test Menu]] shows it. The order matters: an enemy joins the list as soon as it exists, and a dying big slime leaves it only *after* its babies have joined. A two-babies-merge likewise creates the new big slime before the babies are removed. So a split or a merge never makes the count touch zero, which would otherwise look like a cleared wave. Enemies destroyed without the usual callbacks are dropped from the list the next time it is read.
 
 ## Verified in Play mode (2 Oct 2026, `Test AI enemy`)
 

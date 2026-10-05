@@ -34,6 +34,21 @@ The scene is saved with a generated level already in it. On Play the randomizer 
 
 Because every room attaches to an earlier one, the level is always fully connected.
 
+## What it tells other systems about the level
+
+After a build the randomizer keeps a description of the level it made, for the [[Game Loop]] to use:
+
+- **The rooms**, as rectangles of floor cells. Room 0 is always the start room.
+- **The links**: which two rooms each doorway joins. Every room is attached to exactly one earlier room, so the links form a tree with no loops.
+- **A random free spot in a room.** It picks a floor cell whose eight neighbours hold no wall or pillar tile, so a character placed there is never stuck. It checks the tiles rather than the colliders, because the wall collider is only rebuilt after the level has been built, and enemies and the key are placed in that same moment.
+- **Which room a point is in.** A doorway counts as part of one of the two rooms it joins.
+
+`LevelGraph` answers distance questions from that data: how many doors apart two rooms are, which room is farthest from a given one, and all rooms ordered from far to near. Ties in door count go to the room that is farther away in a straight line. The game loop uses it to put the gate as far from the start as possible and the key away from the player.
+
+This data only exists after `Randomize()` has run in the current session. A level that was saved into the scene and loaded with it has no room list.
+
+**Building on start** can be switched off (`buildOnStart`). The sandbox keeps it on. The Demo scene turns it off, because the game loop decides when each level is built.
+
 ## How each part looks the way it does
 
 **Floor.** The floor art is drawn as 2×2 tile blocks, so the floor is placed block by block and room sizes are given in blocks. Each room picks two floor styles and spreads them in large patches using Perlin noise, with an occasional random block mixed in. That mimics a hand-painted floor.
@@ -70,7 +85,7 @@ Because every room attaches to an earlier one, the level is always fully connect
 ## How it can progress
 
 - **Spawn enemies per room**, skipping the start room. The room list and door list are already known at the right moment. This is the bridge to Week 2 combat ([[Roadmap]]).
-- **Room roles:** start, exit, treasure, boss, chosen by distance from the start.
+- **Room roles:** treasure, boss, chosen by distance from the start (the exit already is; see [[Game Loop]]).
 - **Seeds**, so a level can be reproduced for testing or sharing.
 - **Extra doors** between rooms that happen to touch, to create loops.
 - **Decoration pass** using `decorative.png`, torches and candles from the art pack.

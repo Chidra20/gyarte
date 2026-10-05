@@ -22,6 +22,8 @@ public class PauseMenu : MonoBehaviour
     void Update()
     {
         if (Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame) return;
+        // The ability choice and the death screen have the game frozen already and must not be skipped
+        if (GameLoop.BlocksPause) return;
 
         if (!isPaused) Pause();
         else if (settings.gameObject.activeSelf) settings.Close();

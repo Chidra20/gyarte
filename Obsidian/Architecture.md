@@ -30,6 +30,22 @@ flowchart TD
     Walls -->|stops| Fireball
     Health -->|zero health| Slime
     Health -->|hit: Alert| Slime
+    Slime -->|ContactDamage| PlayerHealth[Health<br/>on the Player]
+    Loop[GameLoop<br/>Demo scene] -->|builds each level| Randomizer
+    Loop -->|starts waves| Waves[WaveSpawner]
+    Waves -->|spawns, spaced out| Slime
+    Health -->|alive list: wave cleared?| Waves
+    Waves -->|all waves cleared| Loop
+    Loop -->|places| KeyGate[Key and Gate]
+    KeyGate -->|key, then gate opened| Inventory[Inventory<br/>on the Player]
+    KeyGate -->|gate entered| Loop
+    Loop -->|every 2nd level| Choice[Ability choice]
+    Choice -->|ability| Inventory
+    PlayerHealth -->|died| Loop
+    Loop -->|death: Start Menu| Menus[Menus]
+    Attack -->|cooldowns, reasons| HUD[HUD]
+    PlayerHealth --> HUD
+    Loop --> HUD
 ```
 
 The [[Test Menu]] is left out of the picture because it touches almost everything: it spawns slimes, sets their health, changes the player's movement and attack settings, calls the randomizer and switches the room darkness off and on. It is a developer tool sitting beside the game, and nothing depends on it.
@@ -42,13 +58,14 @@ Almost every link above rests on one of three conventions. Break one and several
 2. **The `wall` tag.** The slime's line of sight and its [[Pathfinding]] treat any non-trigger collider tagged `wall` as solid, and the fireball stops at the same colliders ([[Combat]]). Hand-built scenes tag individual box colliders; the [[Level Randomizer]] tags its whole wall tilemap. An untagged wall still stops the player physically, but the slime will see and walk straight through it and fireballs will fly through it.
 3. **The room object shape.** A room is a child of the object holding `RoomManager`, with a `BoxCollider2D` and a `SpriteRenderer`. Anything built that way, by hand or by the randomizer, is handled by the same manager.
 
-Combat adds a fourth, smaller convention: **anything the player can hurt is on the `Enemy` layer and has an `EnemyHealth` component.** Both attacks find targets by the layer and damage them through that component.
+Combat adds a fourth, smaller convention: **anything the player can hurt is on the `Enemy` layer and has `Health` plus `EnemyHealth`.** Both attacks find targets by the layer and damage them through `EnemyHealth`. The player is on its own `Player` layer, and the `Player` and `Enemy` layers do not collide, so enemies hurt the player by overlap checks, never by pushing ([[Slime Enemy]]).
 
 ## Who creates what
 
 - **Scenes** place the long-lived objects: player, camera, grid and tilemaps, the `Rooms` parent, the UI.
 - **The randomizer** owns everything that changes per level: tiles on both tilemaps and the room objects under `Rooms`. It clears and rebuilds all of it on every run.
 - **Slimes** create each other: a big slime spawns two babies, and two babies spawn a big slime.
+- **The game loop** (Demo scene only) creates everything that belongs to one level of a run: it asks the randomizer for the layout, the wave spawner for the enemies, and places the key and the gate. It removes all of it before building the next level ([[Game Loop]]).
 - **The player's attack** creates fireballs, its own hitbox marker, and, in a scene with no 2D light, one global light so the fireball's glow does not darken everything else ([[Combat]]).
 
 ## Update order
@@ -76,7 +93,7 @@ Darkness sits above characters on purpose: anything inside a dark room is hidden
 
 ## Where the code lives
 
-All gameplay scripts are in the default assembly, with no namespaces and no shared base classes yet.
+All gameplay scripts are in the default assembly, with no namespaces. `Ability` is the only shared base class so far.
 
 | Script | Location | System |
 |---|---|---|
@@ -88,13 +105,19 @@ All gameplay scripts are in the default assembly, with no namespaces and no shar
 | `BigSlime.cs`, `BabySlime.cs` | `Assets/Prefabs/Enemies/Slime/Scripts/` | [[Slime Enemy]] |
 | `GridPathfinder.cs` | `Assets/Prefabs/Enemies/Slime/Scripts/` | [[Pathfinding]] |
 | `MainMenu.cs`, `PauseMenu.cs`, `SettingsMenu.cs` | `Assets/Prefabs/Scripts/` | [[Menus and Game Flow]] |
+| `Health.cs`, `PlayerHurtFlash.cs` | `Assets/Prefabs/Scripts/` | [[Combat]], [[Player]] |
+| `ContactDamage.cs` | `Assets/Prefabs/Enemies/Slime/Scripts/` | [[Slime Enemy]] |
+| `GameLoop.cs`, `WaveSpawner.cs`, `LevelGraph.cs`, `KeyPickup.cs`, `Gate.cs`, `AbilityChoiceScreen.cs`, `LoopHud.cs` | `Assets/Prefabs/Scripts/` | [[Game Loop]] |
+| `Inventory.cs`; `Ability.cs`, `AbilityPool.cs` and the four abilities | `Assets/Prefabs/Scripts/`; `Assets/Prefabs/Abilities/` | [[Inventory and Abilities]] |
+| `HealthLabel.cs`, `AttackCorner.cs` | `Assets/Prefabs/Scripts/` | [[HUD]] |
 | `TestMenu.cs` | `Assets/Prefabs/Scripts/` | [[Test Menu]] |
+| Unit tests and `TestRunLogger` | `Assets/Tests/Editor/` | EditMode tests, run from the Test Runner window |
 
 ## Gaps in the architecture
 
-These are the missing links that Week 2 and later work will add. Details in [[Roadmap]].
+These are the links still missing. Details in [[Roadmap]].
 
-- **Damage flows one way.** The player can hurt slimes ([[Combat]]), but nothing connects the slime to the player.
-- **Health is slime-specific.** `EnemyHealth` knows about `BigSlime` directly, so it cannot yet be reused for the player or a new enemy type.
-- **Enemies and generated levels do not know about each other.** The randomizer does not spawn enemies, and a slime's pathfinder does not notice when the walls change. For now slimes get into a generated level only by hand, through the [[Test Menu]].
-- **No game state.** The player has no health, and there is no death or win condition. Scene flow exists ([[Menus and Game Flow]]) but nothing in the game triggers it except the player's own menu choices.
+- **Enemies don't belong to rooms.** Waves spawn anywhere in the level and chase at once. Enemies placed per room that wake when the room is entered would need the room system and the spawner to talk ([[Rooms and Darkness]]).
+- **A slime's pathfinder never forgets walls.** The game loop avoids the problem by removing every enemy before building a new level; anything that keeps enemies alive through a rebuild would hit it ([[Pathfinding]]).
+- **One art set.** The randomizer has a single list of tiles; per-level asset packs need it to take a tile set per build ([[Level Randomizer]]).
+- **No end to a run.** The loop repeats until death; there is no win condition or score yet ([[Game Loop]]).

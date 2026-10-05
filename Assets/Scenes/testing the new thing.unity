@@ -181,6 +181,7 @@ MonoBehaviour:
   floorTilemap: {fileID: 2200002}
   wallTilemap: {fileID: 2300002}
   player: {fileID: 2400001}
+  buildOnStart: 1
   minRooms: 3
   maxRooms: 6
   roomsParent: {fileID: 1995092558}
@@ -13453,9 +13454,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2700001}
-  - {fileID: 179155029}
   - {fileID: 1346397420}
   - {fileID: 743742338}
+  - {fileID: 179155029}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -15340,6 +15341,9 @@ MonoBehaviour:
   - name: Baby Slime
     prefab: {fileID: 8413997262935697380, guid: 4a9d54083dcb757478614e208d6bb2cb, type: 3}
   wallTag: wall
+  abilityPool: {fileID: 11400000, guid: dabfb4ce35ef70949ad984b510c601f9, type: 2}
+  keyPrefab: {fileID: 5759378277180110335, guid: b624f581a1283a349bb85405c5d3b77b, type: 3}
+  gatePrefab: {fileID: 5498586111504183110, guid: ac12a7654e69bca409ef90d31deac46a, type: 3}
   player: {fileID: 2400004}
   levelRandomizer: {fileID: 2100003}
   roomManager: {fileID: 1995092557}

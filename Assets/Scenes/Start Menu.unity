@@ -14334,7 +14334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3b382c1f98fcb45a875dfa728d57e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
-  gameSceneName: testing the new thing
+  gameSceneName: Demo
   settings: {fileID: 1676084662}
 --- !u!114 &2108383861
 MonoBehaviour:

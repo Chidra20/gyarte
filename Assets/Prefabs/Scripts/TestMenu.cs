@@ -30,6 +30,12 @@ public class TestMenu : MonoBehaviour
     [Tooltip("Enemies are not spawned on top of colliders with this tag.")]
     public string wallTag = "wall";
 
+    [Header("Inventory")]
+    [Tooltip("Abilities the menu can hand out directly.")]
+    public AbilityPool abilityPool;
+    public KeyPickup keyPrefab;
+    public Gate gatePrefab;
+
     [Header("Scene References (found automatically when left empty)")]
     public PlayerMovement player;
     public LevelRandomizer levelRandomizer;
@@ -42,6 +48,10 @@ public class TestMenu : MonoBehaviour
 
     private PlayerAttack attack;
     private Health playerHealth;
+    private Inventory inventory;
+    private WaveSpawner waveSpawner;
+    private GameLoop gameLoop;
+    private int waveTestLevel = 1;
     private Rect windowRect = new Rect(10f, 10f, 350f, 600f);
     private Vector2 scroll;
     private GUIStyle headerStyle;
@@ -74,9 +84,12 @@ public class TestMenu : MonoBehaviour
         {
             attack = player.GetComponent<PlayerAttack>();
             playerHealth = player.GetComponent<Health>();
+            inventory = player.GetComponent<Inventory>();
         }
         if (levelRandomizer == null) levelRandomizer = FindAnyObjectByType<LevelRandomizer>();
         if (roomManager == null) roomManager = FindAnyObjectByType<RoomManager>();
+        waveSpawner = FindAnyObjectByType<WaveSpawner>();
+        gameLoop = FindAnyObjectByType<GameLoop>();
 
         IsOpen = openOnStart;
         SelectSpawnable(0);
@@ -153,8 +166,11 @@ public class TestMenu : MonoBehaviour
     {
         scroll = GUILayout.BeginScrollView(scroll);
 
+        DrawDemo();
         DrawEnemies();
         DrawPlayer();
+        DrawInventory();
+        DrawWaves();
         DrawLevel();
         DrawGame();
 
@@ -164,6 +180,34 @@ public class TestMenu : MonoBehaviour
 
         // The title bar moves the window
         GUI.DragWindow(new Rect(0f, 0f, 10000f, 20f));
+    }
+
+    // ---------- Demo (game loop) ----------
+
+    void DrawDemo()
+    {
+        if (gameLoop == null) return;
+
+        Header("Game loop");
+        GUILayout.Label("Level " + gameLoop.Level + "  ·  " + gameLoop.State);
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Kill all") && waveSpawner != null) waveSpawner.KillAll();
+        if (GUILayout.Button("Skip wave") && waveSpawner != null) waveSpawner.SkipWave();
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Key at player")) gameLoop.ForceKey();
+        if (GUILayout.Button("Open gate")) gameLoop.ForceOpenGate();
+        if (GUILayout.Button("Go to gate")) gameLoop.TeleportToGate();
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Next level")) gameLoop.NextLevel();
+        if (GUILayout.Button("Offer abilities now")) gameLoop.OfferChoiceNow();
+        GUILayout.EndHorizontal();
+
+        IntSlider("Abilities every N levels", ref gameLoop.abilityEveryNLevels, 0, 10);
     }
 
     // ---------- Enemies ----------
@@ -412,6 +456,99 @@ public class TestMenu : MonoBehaviour
     void SetPlayerHealth(int value)
     {
         if (playerHealth != null) playerHealth.SetCurrentHealth(value);
+    }
+
+    // ---------- Inventory ----------
+
+    void DrawInventory()
+    {
+        Header("Inventory");
+
+        if (inventory == null)
+        {
+            GUILayout.Label("The player has no Inventory.");
+            return;
+        }
+
+        GUILayout.Label("Keys: " + inventory.Keys);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Give a key")) inventory.AddKey();
+        if (keyPrefab != null && GUILayout.Button("Key in front")) PlaceInFront(keyPrefab.gameObject);
+        if (gatePrefab != null && GUILayout.Button("Gate in front")) PlaceInFront(gatePrefab.gameObject);
+        GUILayout.EndHorizontal();
+
+        if (inventory.Abilities.Count == 0)
+        {
+            GUILayout.Label("No abilities yet.");
+        }
+        foreach (var pair in inventory.Abilities)
+        {
+            GUILayout.Label(pair.Key.displayName + " x" + pair.Value);
+        }
+
+        if (abilityPool == null)
+        {
+            GUILayout.Label("No ability pool set on the Test Menu object.");
+            return;
+        }
+
+        GUILayout.Label("Add an ability:");
+        foreach (Ability ability in abilityPool.abilities)
+        {
+            if (ability == null) continue;
+            int stacks = inventory.StackCount(ability);
+            GUI.enabled = stacks < ability.maxStacks;
+            if (GUILayout.Button(ability.displayName + " (" + stacks + "/" + ability.maxStacks + ")"))
+            {
+                inventory.AddAbility(ability);
+                status = "Added " + ability.displayName + ".";
+            }
+            GUI.enabled = true;
+        }
+    }
+
+    void PlaceInFront(GameObject prefab)
+    {
+        Vector2 spot = (Vector2)player.transform.position + player.FacingVector * spawnDistance;
+        if (InsideWall(spot))
+        {
+            status = "That spot is inside a wall.";
+            return;
+        }
+        Instantiate(prefab, new Vector3(spot.x, spot.y, player.transform.position.z), Quaternion.identity);
+        status = "Placed " + prefab.name + ".";
+    }
+
+    // ---------- Waves ----------
+
+    void DrawWaves()
+    {
+        if (waveSpawner == null) return;
+
+        Header("Waves");
+        string state = waveSpawner.Running
+            ? "Wave " + waveSpawner.CurrentWave + " / " + waveSpawner.TotalWaves + (waveSpawner.NextWaveIn > 0f ? ", next in " + waveSpawner.NextWaveIn.ToString("0.0") + "s" : "")
+            : "Not running";
+        GUILayout.Label(state);
+
+        IntSlider("Level to test", ref waveTestLevel, 1, 20);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Start waves")) waveSpawner.StartLevel(waveTestLevel);
+        if (GUILayout.Button("Skip wave")) waveSpawner.SkipWave();
+        if (GUILayout.Button("Kill all")) waveSpawner.KillAll();
+        GUILayout.EndHorizontal();
+
+        IntSlider("Base waves", ref waveSpawner.baseWaves, 1, 10);
+        Slider("Waves per level", ref waveSpawner.wavesPerLevel, 0f, 2f);
+        IntSlider("Max waves", ref waveSpawner.maxWaves, 1, 20);
+        IntSlider("Base enemies / wave", ref waveSpawner.baseEnemiesPerWave, 1, 20);
+        IntSlider("Enemies per level", ref waveSpawner.enemiesPerLevel, 0, 5);
+        IntSlider("Max enemies / wave", ref waveSpawner.maxEnemiesPerWave, 1, 30);
+        Slider("Seconds between waves", ref waveSpawner.timeBetweenWaves, 0f, 10f);
+        Slider("Min distance to player", ref waveSpawner.minPlayerDistance, 0f, 20f);
+        Slider("Min enemy spacing", ref waveSpawner.minEnemySpacing, 0f, 10f);
+        Slider("Crowd radius", ref waveSpawner.crowdRadius, 0f, 15f);
+        IntSlider("Max enemies in radius", ref waveSpawner.maxPerRadius, 1, 10);
     }
 
     // ---------- Level ----------
