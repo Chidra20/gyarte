@@ -31,8 +31,10 @@ public class GameLoop : MonoBehaviour
     public float levelBannerTime = 2f;
     [Tooltip("Real seconds 'You died' stays up before going back to the menu.")]
     public float deathScreenTime = 1.5f;
-    [Tooltip("The key never appears closer than this to the player.")]
-    public float minKeyDistance = 4f;
+    [Tooltip("The key drops in the player's room, at least this far from them...")]
+    public float minKeyDistance = 2f;
+    [Tooltip("...and at most this far, when the room allows it.")]
+    public float maxKeyDistance = 5f;
     [Tooltip("Scene loaded after dying. It has to be in the Build Settings scene list.")]
     public string menuSceneName = "Start Menu";
 
@@ -190,32 +192,22 @@ public class GameLoop : MonoBehaviour
         Apply("wavesCleared");
     }
 
-    // Somewhere the player is not: a random room among the farther half from the player's room.
-    // In a one-room level it goes in the same room, at least minKeyDistance away
+    // In the room the player is in when the last wave ends, a short walk away, so a cleared level
+    // never turns into a key hunt. Falls back to anywhere in that room, then to the player's feet
     void SpawnKey()
     {
         if (keyPrefab == null || key != null) return;
 
-        int playerRoom = Mathf.Max(0, randomizer.RoomIndexAt(player.position));
-        List<int> rooms = LevelGraph.RoomsByDistance(randomizer.Rooms.Count, randomizer.RoomLinks, randomizer.Rooms, playerRoom);
+        int playerRoom = WaveSpawner.SpawnRoom(randomizer.RoomIndexAt(player.position), randomizer.StartRoomIndex);
 
         Vector2? spot = null;
-        if (rooms.Count > 0)
+        for (int attempt = 0; attempt < 30 && spot == null; attempt++)
         {
-            int farHalf = Mathf.Max(1, (rooms.Count + 1) / 2);
-            for (int attempt = 0; attempt < 10 && spot == null; attempt++)
-            {
-                int room = rooms[UnityEngine.Random.Range(0, farHalf)];
-                if (randomizer.TryGetRandomFloorPoint(room, out Vector2 point) && !OnGate(point)) spot = point;
-            }
-        }
-        for (int attempt = 0; attempt < 20 && spot == null; attempt++)
-        {
-            if (randomizer.TryGetRandomFloorPoint(playerRoom, out Vector2 point)
-                && Vector2.Distance(point, player.position) >= minKeyDistance && !OnGate(point))
-            {
-                spot = point;
-            }
+            if (!randomizer.TryGetRandomFloorPoint(playerRoom, out Vector2 point) || OnGate(point)) continue;
+            float distance = Vector2.Distance(point, player.position);
+            // The first half of the tries insist on a short walk; after that anywhere in the room will do
+            bool nearEnough = attempt >= 15 || (distance >= minKeyDistance && distance <= maxKeyDistance);
+            if (nearEnough) spot = point;
         }
         // Last resort: right where the player is, so the loop can never get stuck without a key
         Vector2 at = spot ?? (Vector2)player.position;

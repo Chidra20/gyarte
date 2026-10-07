@@ -19,7 +19,9 @@ Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the i
 
 **Fire spell (ranged).** Pressing the projectile button plays the `FireSpell` animation and, on the frame the fire leaves the hand, spawns a `FireProjectile`. The spell uses charges: a small number can be stored, each cast spends one, and they come back one at a time on a timer. The attack corner of the [[HUD]] shows the charges and the time until the next one.
 
-**Why an attack is blocked.** `PlayerAttack` names the reason an attack can't be used right now: the other attack is still playing ("Busy"), the swing is on "Cooldown", or the spell has "No charges". The [[HUD]] shows these reasons. Abilities can change the cooldown and the number of charges ([[Inventory and Abilities]]).
+**Knockback.** A hit pushes the enemy back (see `EnemyKnockback` in [[Slime Enemy]]). The strength is set per attack on `PlayerAttack`: `meleeKnockback` for the swing (away from the player) and `spellKnockback` for the fireball (along its flight). Both are in the Inspector and as sliders in the [[Test Menu]]; 0 turns knockback off. A lethal hit doesn't push, since the enemy splits or dies.
+
+**Why an attack is blocked. `PlayerAttack` names the reason an attack can't be used right now: the other attack is still playing ("Busy"), the swing is on "Cooldown", or the spell has "No charges". The [[HUD]] shows these reasons. Abilities can change the cooldown and the number of charges ([[Inventory and Abilities]]).
 
 While either attack is playing, `PlayerMovement` keeps the facing direction fixed and holds the run animations off so the attack animation is not interrupted. The player can still move during an attack unless `lockMovementWhileCasting` is turned on.
 

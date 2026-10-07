@@ -24,6 +24,10 @@ The rest of the Week 2 plan was built as part of a bigger piece: a `Demo` scene 
 - **Scenes.** `Demo` for the game, `testing the new thing` for trying new things, `Test AI enemy` for AI, and `Start Menu`. Start loads `Demo`. Unused scenes were deleted ([[Scenes and Assets]]).
 - **Tests.** EditMode unit tests in `Assets/Tests/Editor/`, run from the Test Runner window or through `TestRunLogger`.
 
+### Done (7 Oct 2026): first playtest fixes
+
+Slimes no longer lock on from anywhere; they're slower and get knocked back by hits, with the push strength adjustable. Rooms are bigger. Waves spawn only in the player's room, behind glowing warning markers. The key drops in the player's room. An FPS counter shows real frame rate with VSync off. See [[Game Loop]], [[Slime Enemy]], [[Combat]], [[HUD]].
+
 ### Still to do from Week 2
 
 - **Fix the remaining combat bug** listed under Known issues: the swing hitting through walls.

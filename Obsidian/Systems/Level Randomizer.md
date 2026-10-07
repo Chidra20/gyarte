@@ -63,7 +63,7 @@ This data only exists after `Randomize()` has run in the current session. A leve
 
 ## What you can change in the Inspector
 
-- Room count range and room size range (in blocks)
+- Room count range and room size range (in blocks). Since 7 Oct 2026 rooms are 7×5 to 12×8 blocks, i.e. 14×10 to 24×16 tiles (they were 4×3 to 9×6), so waves have room to spawn away from the player
 - The list of floor blocks, patch size and how often odd blocks appear
 - Every wall piece and repeating pattern
 - The list of pillars, how many per room and the spacing around them

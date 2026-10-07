@@ -30,6 +30,16 @@ Both attacks have a limit, so neither can be spammed: the swing has a cooldown t
 
 The corner reads everything from `PlayerAttack` every frame. The reasons are decided there, not in the HUD, so anything else that needs them (an AI hint, a sound) gets the same answer. The slots build themselves when the game starts, so the prefab is a single object.
 
+## FPS counter (bottom right)
+
+`FpsCounter` (`Assets/Prefabs/Scripts/FpsCounter.cs`, with the maths in `FpsSampler.cs`) shows frames per second, milliseconds per frame, and the slowest frame of the last half second. It is in `Demo` and `testing the new thing`.
+
+**How FPS is measured.** Every frame Unity reports how long the previous frame took (`Time.unscaledDeltaTime`, real time, so pausing doesn't affect it). The counter keeps the last half second of those times. FPS is how many frames fit in that half second, divided by its length. Milliseconds per frame is the average frame time. The worst frame is the single slowest one, which shows a hitch even when the average looks fine. The text refreshes four times a second so it can be read.
+
+**Why it can show more than 60 on a 60 Hz monitor.** With VSync on, Unity waits for the monitor's refresh before showing each frame, so the game can never run faster than the screen (60 FPS on a 60 Hz monitor). The counter's `uncapFrameRate` switch (on by default) turns VSync off and removes any frame cap when the game starts, so the number is what the PC can actually do. The monitor still only shows 60 of those frames per second, and fast camera movement can show tearing. The Test Menu can switch the cap back on.
+
+Colours: green at 60 or more, yellow from 30, red below 30. In the editor the number is lower than in a built game, because the editor draws its own windows too.
+
 ## How it can progress
 
 - Icons and art for the slots; a hit flash on the health label.

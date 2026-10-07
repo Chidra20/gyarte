@@ -440,6 +440,8 @@ public class TestMenu : MonoBehaviour
         if (attack == null) return;
 
         IntSlider("Attack damage", ref attack.attackDamage, 1, 20);
+        Slider("Swing knockback", ref attack.meleeKnockback, 0f, 30f);
+        Slider("Fireball knockback", ref attack.spellKnockback, 0f, 30f);
         Slider("Swing range", ref attack.attackRange, 0.25f, 3f);
         Slider("Swing cooldown", ref attack.meleeCooldown, 0f, 3f);
         attack.showHitbox = GUILayout.Toggle(attack.showHitbox, " Show swing hitbox");
@@ -545,6 +547,7 @@ public class TestMenu : MonoBehaviour
         IntSlider("Enemies per level", ref waveSpawner.enemiesPerLevel, 0, 5);
         IntSlider("Max enemies / wave", ref waveSpawner.maxEnemiesPerWave, 1, 30);
         Slider("Seconds between waves", ref waveSpawner.timeBetweenWaves, 0f, 10f);
+        Slider("Spawn warning seconds", ref waveSpawner.telegraphTime, 0f, 5f);
         Slider("Min distance to player", ref waveSpawner.minPlayerDistance, 0f, 20f);
         Slider("Min enemy spacing", ref waveSpawner.minEnemySpacing, 0f, 10f);
         Slider("Crowd radius", ref waveSpawner.crowdRadius, 0f, 15f);
@@ -617,6 +620,20 @@ public class TestMenu : MonoBehaviour
     void DrawGame()
     {
         Header("Game");
+
+        FpsCounter fps = FindAnyObjectByType<FpsCounter>(FindObjectsInactive.Include);
+        if (fps != null)
+        {
+            bool shown = GUILayout.Toggle(fps.gameObject.activeSelf, " Show FPS counter");
+            if (shown != fps.gameObject.activeSelf) fps.gameObject.SetActive(shown);
+        }
+        bool uncapped = QualitySettings.vSyncCount == 0 && Application.targetFrameRate <= 0;
+        bool uncap = GUILayout.Toggle(uncapped, " Uncapped frame rate (VSync off)");
+        if (uncap != uncapped)
+        {
+            if (uncap) FpsCounter.Uncap();
+            else FpsCounter.Cap();
+        }
 
         if (Time.timeScale == 0f)
         {

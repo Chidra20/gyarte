@@ -44,7 +44,7 @@ The "alive" count in the header is the same list of living enemies the waves use
 
 ### Player
 
-Health (current and max, shown and adjustable; setting it can never kill), hurt immunity seconds, god mode, heal to full, take 1 damage. Then move speed, attack damage (used by both the swing and the fireball), swing range, swing cooldown, a switch to show the swing's hitbox, the fire spell's maximum charges and recharge time, unlimited fire spell, standing still while casting, and a button to refill the spell. See [[Player]] and [[Combat]].
+Health (current and max, shown and adjustable; setting it can never kill), hurt immunity seconds, god mode, heal to full, take 1 damage. Then move speed, attack damage, swing and fireball knockback (used by both the swing and the fireball), swing range, swing cooldown, a switch to show the swing's hitbox, the fire spell's maximum charges and recharge time, unlimited fire spell, standing still while casting, and a button to refill the spell. See [[Player]] and [[Combat]].
 
 ### Inventory
 
@@ -52,7 +52,7 @@ Keys held, with buttons to give one or to place a key or a gate in front of the 
 
 ### Waves
 
-Only shown in a scene with a `WaveSpawner`. It shows the current wave and the time to the next. There are buttons to start the waves for any level number, skip the current wave, or kill every enemy, and sliders for every wave setting: counts, growth per level, the breather, and the spawn spacing rules. See [[Game Loop]].
+Only shown in a scene with a `WaveSpawner`. It shows the current wave and the time to the next. There are buttons to start the waves for any level number, skip the current wave, or kill every enemy, and sliders for every wave setting: counts, growth per level, the breather, how long the spawn markers glow before enemies appear, and the spawn spacing rules. See [[Game Loop]].
 
 ### Level
 
@@ -61,7 +61,7 @@ Only shown in a scene with a `WaveSpawner`. It shows the current wave and the ti
 
 ### Game
 
-Game speed, back to normal speed, and restart the scene. The speed slider is replaced by "Paused" while the pause menu has the game frozen, and resuming from the pause menu sets the speed back to normal.
+Show or hide the FPS counter, switch the frame rate cap (VSync) on or off ([[HUD]]), game speed, back to normal speed, and restart the scene. The speed slider is replaced by "Paused" while the pause menu has the game frozen, and resuming from the pause menu sets the speed back to normal.
 
 ## How it works
 

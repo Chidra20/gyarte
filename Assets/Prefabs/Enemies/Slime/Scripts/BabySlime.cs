@@ -24,6 +24,13 @@ public class BabySlime : MonoBehaviour
         timer = fuseDelay; // Start countdown
     }
 
+    private EnemyKnockback knockback;
+
+    void Awake()
+    {
+        knockback = GetComponent<EnemyKnockback>();
+    }
+
     void Update()
     {
         // Countdown fuse timer
@@ -31,6 +38,9 @@ public class BabySlime : MonoBehaviour
         {
             timer -= Time.deltaTime;
         }
+
+        // Being pushed back by a hit: let EnemyKnockback move it
+        if (knockback != null && knockback.IsKnockedBack) return;
 
         // Always keep moving toward partner
         if (partnerSlime != null)

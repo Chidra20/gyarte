@@ -46,6 +46,7 @@ public class BigSlime : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private bool movedThisStep;
+    private EnemyKnockback knockback;
 
     private Vector2 homePosition;
     private Vector2 patrolTarget;
@@ -66,6 +67,7 @@ public class BigSlime : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        knockback = GetComponent<EnemyKnockback>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
@@ -86,6 +88,13 @@ public class BigSlime : MonoBehaviour
         if (rb == null) return;
 
         movedThisStep = false;
+
+        // Being pushed back by a hit: EnemyKnockback moves the body this step
+        if (knockback != null && knockback.IsKnockedBack)
+        {
+            UpdateAnimation();
+            return;
+        }
 
         switch (state)
         {

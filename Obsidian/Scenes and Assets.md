@@ -31,6 +31,7 @@ Every gameplay scene carries its own copy of the same trio: Main Camera (with a 
 | `Assets/Prefabs/UI/Settings Panel.prefab` | `Start Menu`, `testing the new thing` and `Demo`. See [[Menus and Game Flow]]. |
 | `Assets/Prefabs/UI/Health Label.prefab`, `Attack Corner.prefab` | `testing the new thing` and `Demo`. See [[HUD]]. |
 | `Assets/Prefabs/UI/Loop HUD.prefab`, `Ability Choice.prefab` | `Demo`. See [[Game Loop]]. |
+| `Assets/Prefabs/Spawn Marker.prefab` | The glowing warning on a spawn spot, placed by the wave spawner ([[Game Loop]]). Uses `Assets/Art/Placeholders/SoftGlow.png` |
 | `Assets/Prefabs/Key.prefab`, `Gate.prefab` | Placed by the [[Game Loop]]; also from the [[Test Menu]]. Placeholder art from `Assets/Art/Placeholders/`. |
 | `Assets/Prefabs/Abilities/` | The ability scripts, their assets and `Default Ability Pool`. See [[Inventory and Abilities]]. |
 

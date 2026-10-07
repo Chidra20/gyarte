@@ -94,10 +94,11 @@ public class LoopHud : MonoBehaviour
         switch (loop.State)
         {
             case LoopState.Fighting:
+                if (spawner != null && spawner.Telegraphing) return "Here they come";
                 float next = spawner != null ? spawner.NextWaveIn : 0f;
                 return next > 0f ? "Next wave in " + Mathf.CeilToInt(next) + "s" : "Survive";
             case LoopState.KeyHunt:
-                return inventory != null && inventory.Keys > 0 ? "Go to the gate" : "Find the key";
+                return inventory != null && inventory.Keys > 0 ? "Go to the gate" : "Pick up the key";
             case LoopState.GateOpen:
                 return "Go through the gate";
             default:

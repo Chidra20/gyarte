@@ -48,6 +48,14 @@ Both prefabs carry `Health` and `EnemyHealth` components ([[Combat]]); the amoun
 
 The intended fight: kill the big slime, then kill at least one baby before the pair reunites. The babies are slow and the merge delay is short, so the window is about a second. This loop was played through in Play mode on 2 Oct 2026.
 
+## Speed
+
+The big slime chases at 2.5 and patrols at 1.2 (it was 5 and 2; the chase was as fast as the player). Babies drift at 0.5. Slimes are meant to be slow; the danger is in numbers and in the split.
+
+## Getting knocked back
+
+Both slimes have an `EnemyKnockback` component. When a hit lands and the slime survives it, it is pushed away from the hit for a short moment (`duration`, 0.15 s) while its own movement pauses. Slimes are kinematic, so walls don't stop them by themselves; the push checks for walls along its path and stops just short of the first one, so a hit can never shove a slime through a wall. How *hard* the push is comes from the attack, not the slime ([[Combat]]).
+
 ## Hurting the player
 
 Both slimes have a `ContactDamage` component. Every frame it checks whether the player is within a small radius of the slime. If so, it deals damage, at most once per interval, and knocks the player away ([[Player]]). The player's hurt immunity stops a crowd of slimes from draining health all at once.

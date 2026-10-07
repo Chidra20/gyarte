@@ -71,6 +71,14 @@ public class EnemyHealth : MonoBehaviour
         Health.TakeDamage(damage);
     }
 
+    // A hit that also pushes the enemy back (if it survives and has an EnemyKnockback)
+    public void TakeDamage(int damage, Vector2 knockback)
+    {
+        if (!Health.TakeDamage(damage) || Health.IsDead) return;
+        EnemyKnockback push = GetComponent<EnemyKnockback>();
+        if (push != null) push.Push(knockback);
+    }
+
     void OnDamaged()
     {
         // Getting hit makes the slime notice the player, even from behind

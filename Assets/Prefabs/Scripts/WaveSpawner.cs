@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Sends waves of enemies at the player in a generated level. Each wave spawns on random floor spots,
-// away from the player and not bunched together. A wave is over when no enemy is left alive
-// (babies count too); after a short breather the next one comes, and after the last one AllWavesCleared fires.
+// Sends waves of enemies at the player in a generated level. Each wave spawns in the room the player is in,
+// on random floor spots away from the player and not bunched together. A glowing marker shows each spot
+// for a moment before the enemy appears. A wave is over when no enemy is left alive (babies count too);
+// after a short breather the next one comes, and after the last one AllWavesCleared fires.
 public class WaveSpawner : MonoBehaviour
 {
     [Header("References (found automatically when empty)")]
@@ -12,6 +13,12 @@ public class WaveSpawner : MonoBehaviour
     public Transform player;
     [Tooltip("What each wave is made of.")]
     public GameObject enemyPrefab;
+    [Tooltip("Shown on each spawn spot before the enemy appears.")]
+    public GameObject spawnMarkerPrefab;
+
+    [Header("Warning before a wave")]
+    [Tooltip("Seconds the spawn markers glow before the enemies appear.")]
+    public float telegraphTime = 1.5f;
 
     [Header("Waves per level")]
     public int baseWaves = 2;
@@ -28,7 +35,7 @@ public class WaveSpawner : MonoBehaviour
 
     [Header("Where enemies may spawn")]
     [Tooltip("No enemy spawns closer than this to the player.")]
-    public float minPlayerDistance = 6f;
+    public float minPlayerDistance = 4f;
     [Tooltip("No enemy spawns closer than this to another living enemy.")]
     public float minEnemySpacing = 2f;
     [Tooltip("At most maxPerRadius living enemies may be within this distance of a new spawn.")]
@@ -40,8 +47,9 @@ public class WaveSpawner : MonoBehaviour
     public int CurrentWave { get; private set; }
     public int TotalWaves { get; private set; }
     public bool Running { get; private set; }
-    // Seconds until the next wave, 0 while a wave is being fought
-    public float NextWaveIn => Running && !waveActive ? Mathf.Max(0f, nextWaveTime - Time.time) : 0f;
+    // Seconds until the next wave, 0 while a wave is coming or being fought
+    public float NextWaveIn => Running && !waveActive && !telegraphing ? Mathf.Max(0f, nextWaveTime - Time.time) : 0f;
+    public bool Telegraphing => telegraphing;
 
     public event Action<int> WaveStarted;
     public event Action AllWavesCleared;
@@ -50,7 +58,10 @@ public class WaveSpawner : MonoBehaviour
     private float nextWaveTime;
     private int level;
     private Transform enemiesParent;
-    private readonly List<BigSlime> toAlert = new List<BigSlime>();
+    private bool telegraphing;
+    private float telegraphUntil;
+    private readonly List<GameObject> markers = new List<GameObject>();
+    private readonly List<Vector2> pendingSpawns = new List<Vector2>();
 
     public static int WaveCount(int level, int baseWaves, float wavesPerLevel, int maxWaves)
     {
@@ -60,6 +71,12 @@ public class WaveSpawner : MonoBehaviour
     public static int WaveSize(int level, int baseEnemies, int enemiesPerLevel, int maxEnemies)
     {
         return Mathf.Min(maxEnemies, baseEnemies + level * enemiesPerLevel);
+    }
+
+    // Waves come where the player is. Outside every room (between rooms): the start room
+    public static int SpawnRoom(int playerRoom, int startRoom)
+    {
+        return playerRoom >= 0 ? playerRoom : startRoom;
     }
 
     public static bool IsValidSpawn(Vector2 point, Vector2 player, IList<Vector2> enemies,
@@ -118,14 +135,27 @@ public class WaveSpawner : MonoBehaviour
     {
         Running = false;
         waveActive = false;
-        toAlert.Clear();
+        ClearMarkers();
         foreach (EnemyHealth enemy in new List<EnemyHealth>(EnemyHealth.Alive)) Destroy(enemy.gameObject);
     }
 
-    // Removes the living enemies; the wave then counts as cleared as usual
+    // Removes the living enemies and any wave that is about to appear; the wave then counts as cleared as usual
     public void KillAll()
     {
+        if (telegraphing)
+        {
+            ClearMarkers();
+            waveActive = true;
+        }
         foreach (EnemyHealth enemy in new List<EnemyHealth>(EnemyHealth.Alive)) Destroy(enemy.gameObject);
+    }
+
+    void ClearMarkers()
+    {
+        telegraphing = false;
+        pendingSpawns.Clear();
+        foreach (GameObject marker in markers) if (marker != null) Destroy(marker);
+        markers.Clear();
     }
 
     // Ends the current wave now: removes its enemies and starts the next one without the breather
@@ -138,14 +168,13 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        // Slimes ignore Alert until their Start has run, so they are woken a frame after spawning
-        foreach (BigSlime slime in toAlert)
-        {
-            if (slime != null) slime.Alert();
-        }
-        toAlert.Clear();
-
         if (!Running) return;
+
+        if (telegraphing)
+        {
+            if (Time.time >= telegraphUntil) SpawnPending();
+            return;
+        }
 
         if (waveActive)
         {
@@ -166,17 +195,15 @@ public class WaveSpawner : MonoBehaviour
         if (Time.time >= nextWaveTime) SpawnWave();
     }
 
+    // Picks the spots and puts a glowing marker on each; the enemies follow after telegraphTime
     void SpawnWave()
     {
         CurrentWave++;
-        waveActive = true;
 
         int size = WaveSize(level, baseEnemiesPerWave, enemiesPerLevel, maxEnemiesPerWave);
-        int spawned = 0;
+        pendingSpawns.Clear();
         if (enemyPrefab != null && randomizer != null && randomizer.Rooms.Count > 0 && player != null)
         {
-            if (enemiesParent == null) enemiesParent = new GameObject("Enemies").transform;
-
             var taken = new List<Vector2>();
             foreach (EnemyHealth enemy in EnemyHealth.Alive) taken.Add(enemy.transform.position);
 
@@ -187,23 +214,45 @@ public class WaveSpawner : MonoBehaviour
                 {
                     continue;
                 }
-
-                GameObject enemy = Instantiate(enemyPrefab, new Vector3(point.x, point.y, player.position.z), Quaternion.identity, enemiesParent);
                 taken.Add(point);
-                spawned++;
-
-                BigSlime slime = enemy.GetComponent<BigSlime>();
-                if (slime != null) toAlert.Add(slime);
+                pendingSpawns.Add(point);
             }
         }
 
-        if (spawned < size) Debug.Log("Wave " + CurrentWave + ": spawned " + spawned + " of " + size + " (no room left that keeps the spacing).");
+        if (pendingSpawns.Count < size) Debug.Log("Wave " + CurrentWave + ": " + pendingSpawns.Count + " of " + size + " enemies fit in the room with the spacing rules.");
         WaveStarted?.Invoke(CurrentWave);
+
+        // Nothing fits: the wave counts as cleared on the next frame instead of stalling the level
+        if (pendingSpawns.Count == 0)
+        {
+            waveActive = true;
+            return;
+        }
+
+        foreach (Vector2 point in pendingSpawns)
+        {
+            if (spawnMarkerPrefab != null)
+                markers.Add(Instantiate(spawnMarkerPrefab, new Vector3(point.x, point.y, player.position.z), Quaternion.identity));
+        }
+        telegraphing = true;
+        telegraphUntil = Time.time + telegraphTime;
+    }
+
+    void SpawnPending()
+    {
+        if (enemiesParent == null) enemiesParent = new GameObject("Enemies").transform;
+        float z = player != null ? player.position.z : 0f;
+        foreach (Vector2 point in pendingSpawns)
+        {
+            Instantiate(enemyPrefab, new Vector3(point.x, point.y, z), Quaternion.identity, enemiesParent);
+        }
+        ClearMarkers();
+        waveActive = true;
     }
 
     Vector2? SampleFloorPoint()
     {
-        int room = UnityEngine.Random.Range(0, randomizer.Rooms.Count);
+        int room = SpawnRoom(randomizer.RoomIndexAt(player.position), randomizer.StartRoomIndex);
         return randomizer.TryGetRandomFloorPoint(room, out Vector2 point) ? point : (Vector2?)null;
     }
 }

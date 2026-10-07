@@ -13,7 +13,7 @@ flowchart TD
     Menu[Start Menu] -->|Start| Build
     Build[Build a random level<br/>gate in the farthest room] --> Banner[Level N banner]
     Banner --> Waves[Waves of slimes]
-    Waves -->|last wave cleared| Key[Key appears in a far room]
+    Waves -->|last wave cleared| Key[Key drops in the player's room]
     Key -->|picked up| Gate[Open the gate with the key]
     Gate -->|go through| Choice{every 2nd level?}
     Choice -->|yes| Pick[Pick 1 of 3 abilities]
@@ -45,7 +45,7 @@ Every change in normal play goes through one table (`GameLoop.Transition`) that 
 
 **Building a level.** First everything from the last level is removed: enemies, key and gate. Old enemies would otherwise end up inside the new walls, and their pathfinders would remember the old ones ([[Pathfinding]]). Then the randomizer builds a new level and puts the player in the start room. The gate goes in the room the most doors away from the start, so the whole level lies between them. A "Level N" banner shows for two seconds before the first wave.
 
-**The key** appears once the last wave is cleared. It goes in a random room among the farther half of the rooms, measured from the room the player is standing in, and never on the gate. In a level with a single room it goes in that room, away from the player. As a last resort it appears at the player's feet, so the loop can never get stuck without a key.
+**The key** drops once the last wave is cleared, in the room the player is standing in, a short walk away (2 to 5 units when the room allows it) and never on the gate. A cleared level should not turn into a key hunt; the walk to the gate is the only crossing left. As a last resort it appears at the player's feet, so the loop can never get stuck without a key. (Until 7 Oct 2026 it went to a far room.)
 
 **Guards for the Test Menu.** Forcing the gate open only works while a level is being played (Fighting or KeyHunt). Opened during the banner, the loop would ignore it and the gate would never let the player through. If the last wave ends while a test choice has the game frozen, the key is still handed out once the choice is made.
 
@@ -65,7 +65,7 @@ Every change in normal play goes through one table (`GameLoop.Transition`) that 
 
 **How many.** The number of waves and the number of enemies per wave both grow with the level number, each up to a cap. Level 1 has two waves of three slimes; later levels have more and bigger waves. All the numbers are fields on the component and sliders in the [[Test Menu]].
 
-**Where they appear.** Each enemy gets a random free spot on the floor of a random room ([[Level Randomizer]]). A spot is refused when:
+**Where they appear.** In the room the player is in when the wave starts, never in rooms the player hasn't reached. Each enemy gets a random free spot on that room's floor ([[Level Randomizer]]). A spot is refused when:
 
 - it is too close to the player, so nothing appears on top of them,
 - it is too close to another living enemy, so enemies don't stack,
@@ -73,13 +73,15 @@ Every change in normal play goes through one table (`GameLoop.Transition`) that 
 
 A refused spot is retried a limited number of times. When nothing fits (a tiny level, or very strict spacing), that enemy is skipped and the wave comes up short. A wave that spawns nobody counts as cleared at once, so the loop can never stall on spawning.
 
-**Waking up.** New slimes are told to chase straight away ([[Slime Enemy]]), so they come to the player through the dark rooms instead of patrolling. This happens one frame after they appear, because a slime ignores the order until it has finished setting itself up.
+**The warning.** Before a wave appears, each chosen spot gets a glowing green marker (`Spawn Marker` prefab) that pulses for `telegraphTime` (1.5 s), and the HUD says *Here they come*. Then the slimes appear on the markers and the markers vanish. The spots are fixed when the markers appear, so stepping onto one doesn't move it; the spacing from the player only applies at that moment.
+
+**Waking up.** New slimes start like any other slime: patrolling, until they see the player with their normal sight ([[Slime Enemy]]). Until 7 Oct 2026 every new slime was told to chase at once, which let them lock onto the player from anywhere in the level.
 
 **When a wave is over.** When no enemy is alive, counting babies, using the shared list of living enemies ([[Combat]]). The check runs every frame rather than reacting to deaths. A big slime splitting or two babies merging therefore never ends a wave early, because the list never drops to zero during either. After a short breather the next wave starts. After the last wave the spawner reports that the level's waves are done.
 
 **Verified on 5 Oct 2026** in `testing the new thing`, with a spawner added for the test:
 
-- Level 1 gave two waves of three. Every slime spawned at least 8 units from the player, and no two closer than the minimum spacing.
+- (5 Oct, before the room-only change) Level 1 gave two waves of three. Every slime spawned at least 8 units from the player, and no two closer than the minimum spacing.
 - Wave 2 started two seconds after wave 1 was cleared, and clearing it reported the waves as done.
 - With an impossible distance to the player, both waves spawned nobody, counted as cleared, and the waves finished without errors.
 
@@ -95,7 +97,7 @@ A refused spot is retried a limited number of times. When nothing fits (a tiny l
 
 Opening and going through are two separate steps. Standing in the gate only counts as going through once it has been open for a moment (a third of a second). The player is usually still inside the gate when it opens, so standing there, not only stepping in, counts.
 
-Both sit at the same drawing level as the characters, under the room darkness. So they are hidden until the player enters their room ([[Rooms and Darkness]]), which is what makes the key something to find.
+Both sit at the same drawing level as the characters, under the room darkness, so the gate stays hidden until the player reaches its room ([[Rooms and Darkness]]). The key drops in the room the player is already in, so it is always visible.
 
 **Verified on 5 Oct 2026** in `testing the new thing`: the closed gate without a key asked for one; touching the key gave one key; walking back in opened the gate and used the key; going through was reported 0.3 s later.
 
@@ -105,7 +107,7 @@ In the [[Test Menu]], the Inventory section can place a key or a gate in front o
 
 `LoopHud` adds the loop's information to the [[HUD]]:
 
-- **Top centre:** "Level 3 · Wave 2/4" (the wave part only while fighting), and below it what to do now: *Survive*, *Next wave in 2s*, *Find the key*, *Go to the gate*, *Go through the gate*. For two seconds after walking into a closed gate without a key it says *Need a key*, in red.
+- **Top centre:** "Level 3 · Wave 2/4" (the wave part only while fighting), and below it what to do now: *Here they come* (markers showing), *Survive*, *Next wave in 2s*, *Pick up the key*, *Go to the gate*, *Go through the gate*. For two seconds after walking into a closed gate without a key it says *Need a key*, in red.
 - **Top right:** the inventory, read every frame: the word "Key" while one is held (there is no key icon yet), and the abilities picked so far with their stacks.
 - **Centre:** the "Level N" banner, and the "You died" screen.
 
@@ -120,7 +122,7 @@ Its texts are built as soon as it exists (in `Awake`), because the game loop sho
 In `Demo`, with god mode on until the death check:
 
 - Level 1 built 5 rooms with the gate in the farthest one. The banner showed for 2 s, then wave 1 of 2 began. The first slime reached the player within a few seconds.
-- After both waves the key appeared in room 3 while the player was in room 0, 30 units away. The objective changed to *Find the key*.
+- After both waves the key appeared in room 3 while the player was in room 0, 30 units away (the old far-room rule, replaced on 7 Oct). The objective changed to *Find the key*.
 - Picking up the key, then entering the gate: it opened, the player went through, and level 2 was built with a different layout. There was no choice screen after level 1.
 - After level 2 the choice screen showed three different cards, froze the game and blocked the pause menu. Picking Vitality gave 12/12 health and built level 3.
 - Opening a choice and dying while it was open: death won, the screen closed and no level was built. "You died" showed, then the Start Menu loaded at normal speed.
@@ -134,3 +136,12 @@ In `Demo`, with god mode on until the death check:
 - A goal or an end to a run, and a score or a record of how far a run went.
 - Enemies placed per room by the level itself, waking when their room is entered ([[Rooms and Darkness]]).
 - A proper gate and key from the art pack.
+
+## Changes after the first playtest (7 Oct 2026)
+
+- Waves only spawn in the player's current room, with glowing markers first; slimes are no longer told to chase on spawn.
+- The key drops in the player's room.
+- Rooms are bigger ([[Level Randomizer]]), slimes are slower and get knocked back when hit ([[Slime Enemy]], [[Combat]]).
+- An FPS counter in the corner ([[HUD]]).
+
+Verified in `Demo`: rooms of 16×14, 22×10 and 20×16; wave 1 spawned in the player's room; wave 2 showed three markers 5.5–7 units away in the player's room for 1.5 s before spawning; a hit slime was pushed back and stopped just short of a wall; after the last wave the key dropped 4 units from the player in the same room; the counter read about 96 FPS in the editor with VSync off.

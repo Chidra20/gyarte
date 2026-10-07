@@ -32,6 +32,7 @@ public class FireProjectile : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Vector2 direction;
+    private float knockback;
     private int damage;
     private LayerMask enemyLayers;
     private float travelled;
@@ -46,8 +47,10 @@ public class FireProjectile : MonoBehaviour
     private readonly HashSet<EnemyHealth> targets = new HashSet<EnemyHealth>();
     private readonly HashSet<EnemyHealth> alreadyHit = new HashSet<EnemyHealth>();
 
-    public void Launch(Vector2 direction, int damage, LayerMask enemyLayers, int sortingOrder)
+    // knockback: how hard each enemy hit is pushed along the bolt's direction
+    public void Launch(Vector2 direction, int damage, LayerMask enemyLayers, int sortingOrder, float knockback = 0f)
     {
+        this.knockback = knockback;
         this.direction = direction.normalized;
         this.damage = damage;
         this.enemyLayers = enemyLayers;
@@ -124,7 +127,7 @@ public class FireProjectile : MonoBehaviour
             if (health == null || !targets.Contains(health) || alreadyHit.Contains(health)) continue;
 
             alreadyHit.Add(health);
-            health.TakeDamage(damage);
+            health.TakeDamage(damage, direction * knockback);
         }
 
         if (travelled >= maxDistance) SetPhase(Phase.Fade);

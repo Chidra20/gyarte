@@ -8,6 +8,10 @@ public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
     public int attackDamage = 1;
+    [Tooltip("How hard a swing pushes an enemy back (speed of the push, units per second). 0 = no knockback.")]
+    public float meleeKnockback = 8f;
+    [Tooltip("How hard a fireball pushes an enemy back, in the direction it flies. 0 = no knockback.")]
+    public float spellKnockback = 5f;
     public LayerMask enemyLayers;
 
     [Header("Scythe Swing")]
@@ -195,7 +199,9 @@ public class PlayerAttack : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             EnemyHealth health = enemy.GetComponent<EnemyHealth>();
-            if (health != null) health.TakeDamage(attackDamage);
+            if (health == null) continue;
+            Vector2 away = EnemyKnockback.Direction(transform.position, enemy.transform.position, Facing());
+            health.TakeDamage(attackDamage, away * meleeKnockback);
         }
     }
 
@@ -365,6 +371,6 @@ public class PlayerAttack : MonoBehaviour
         int order = direction.y > 0.5f ? playerOrder - 1 : playerOrder + 1;
 
         FireProjectile projectile = Instantiate(projectilePrefab, transform.position + (Vector3)hand, Quaternion.identity);
-        projectile.Launch(direction, attackDamage, enemyLayers, order);
+        projectile.Launch(direction, attackDamage, enemyLayers, order, spellKnockback);
     }
 }

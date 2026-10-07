@@ -188,8 +188,8 @@ MonoBehaviour:
   darknessSprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   darknessColor: {r: 0, g: 0, b: 0, a: 1}
   darknessSortingOrder: 10
-  minRoomBlocks: {x: 4, y: 3}
-  maxRoomBlocks: {x: 9, y: 6}
+  minRoomBlocks: {x: 7, y: 5}
+  maxRoomBlocks: {x: 12, y: 8}
   floorBlocks:
   - topLeft: {fileID: 11400000, guid: 31d77c91c5c44484eb8598f46d94e922, type: 2}
     topRight: {fileID: 11400000, guid: 0e6c79e18f3de014391b59d71f5e35ff, type: 2}
@@ -816,6 +816,7 @@ RectTransform:
   - {fileID: 937445705}
   - {fileID: 1346397420}
   - {fileID: 743742338}
+  - {fileID: 1062722835}
   - {fileID: 2050381654}
   - {fileID: 179155029}
   m_Father: {fileID: 0}
@@ -1024,7 +1025,8 @@ MonoBehaviour:
   choiceCount: 3
   levelBannerTime: 2
   deathScreenTime: 1.5
-  minKeyDistance: 4
+  minKeyDistance: 2
+  maxKeyDistance: 5
   menuSceneName: Start Menu
 --- !u!114 &34466005
 MonoBehaviour:
@@ -1041,6 +1043,8 @@ MonoBehaviour:
   randomizer: {fileID: 2100003}
   player: {fileID: 0}
   enemyPrefab: {fileID: 5737207155772883977, guid: d5e09d9fb9e06f34f9b2d397892ccbf7, type: 3}
+  spawnMarkerPrefab: {fileID: 4877106651654855168, guid: abfef953ee156d8488210bfe172a7d86, type: 3}
+  telegraphTime: 1.5
   baseWaves: 2
   wavesPerLevel: 0.5
   maxWaves: 6
@@ -1048,7 +1052,7 @@ MonoBehaviour:
   enemiesPerLevel: 1
   maxEnemiesPerWave: 10
   timeBetweenWaves: 3
-  minPlayerDistance: 6
+  minPlayerDistance: 4
   minEnemySpacing: 2
   crowdRadius: 5
   maxPerRadius: 3
@@ -1853,6 +1857,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1048927808}
   m_CullTransparentMesh: 1
+--- !u!1 &1062722834
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1062722835}
+  - component: {fileID: 1062722836}
+  m_Layer: 0
+  m_Name: FPS Counter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1062722835
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062722834}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2600001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -20, y: 16}
+  m_SizeDelta: {x: 320, y: 60}
+  m_Pivot: {x: 1, y: 0}
+--- !u!114 &1062722836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062722834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8cec130605794a43afb7664d4a8a927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FpsCounter
+  averageOver: 0.5
+  refreshInterval: 0.25
+  uncapFrameRate: 1
+  fontSize: 22
+  goodColor: {r: 0.55, g: 1, b: 0.55, a: 1}
+  okColor: {r: 1, g: 0.85, b: 0.4, a: 1}
+  badColor: {r: 1, g: 0.45, b: 0.4, a: 1}
 --- !u!1001 &1346397419
 PrefabInstance:
   m_ObjectHideFlags: 0

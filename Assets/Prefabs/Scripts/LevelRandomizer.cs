@@ -59,8 +59,8 @@ public class LevelRandomizer : MonoBehaviour
     public int darknessSortingOrder = 10;
 
     [Header("Room Size (in 2x2 floor blocks)")]
-    public Vector2Int minRoomBlocks = new Vector2Int(4, 3);
-    public Vector2Int maxRoomBlocks = new Vector2Int(9, 6);
+    public Vector2Int minRoomBlocks = new Vector2Int(7, 5);
+    public Vector2Int maxRoomBlocks = new Vector2Int(12, 8);
 
     [Header("Floor")]
     public FloorBlock[] floorBlocks;
