@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: ae9e446924f0bfd40a3168f0c1ef8635
+labels:
+- Catacombs
+- Floor
+- Floor-Ground
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

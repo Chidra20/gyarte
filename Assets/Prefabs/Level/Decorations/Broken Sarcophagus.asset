@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7314071e530cf243ad20a361dbff581, type: 3}
+  m_Name: Broken Sarcophagus
+  m_EditorClassIdentifier: Assembly-CSharp::Decoration
+  prefab: {fileID: 8064829055067912021, guid: b7d0000508246ec409de8fd345d3202b, type: 3}
+  variants:
+  - {fileID: 8064829055067912021, guid: b7d0000508246ec409de8fd345d3202b, type: 3}
+  - {fileID: 8276738670544357486, guid: d5b2c446c4e2dd745a694bbec1fb033c, type: 3}
+  - {fileID: 8722499221594575988, guid: e9644ea6eeb0d974692a28fa67bdb821, type: 3}
+  - {fileID: 7280926121980355967, guid: f059706ac31014a409d6617631aef344, type: 3}
+  rule: 2
+  footprint: {x: 3, y: 2}
+  blocks: 1
+  hazard: 0

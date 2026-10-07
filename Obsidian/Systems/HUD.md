@@ -38,6 +38,18 @@ The corner reads everything from `PlayerAttack` every frame. The reasons are dec
 
 **Why it can show more than 60 on a 60 Hz monitor.** With VSync on, Unity waits for the monitor's refresh before showing each frame, so the game can never run faster than the screen (60 FPS on a 60 Hz monitor). The counter's `uncapFrameRate` switch (on by default) turns VSync off and removes any frame cap when the game starts, so the number is what the PC can actually do. The monitor still only shows 60 of those frames per second, and fast camera movement can show tearing. The Test Menu can switch the cap back on.
 
+### Measurements so far
+
+| Date | Machine | Power | FPS | Notes |
+|---|---|---|---|---|
+| 7 Oct 2026 | Laptop: RTX 2050, Intel Core i5-1335U | Plugged in | about 62 | Barely above a 60 Hz screen |
+| 7 Oct 2026 | Laptop: RTX 2050, Intel Core i5-1335U | On battery | under 15 | Unplayable; laptops cut CPU and GPU power on battery |
+| 7 Oct 2026 | Desktop: RTX 5060 Ti | — | about 600 | |
+
+Measured with the FPS counter in `Demo`, VSync off, before any optimisation.
+
+The gap between the laptop and the desktop is about ten times. Optimisation is planned for later ([[Roadmap]]); new measurements go in this table so changes can be compared.
+
 Colours: green at 60 or more, yellow from 30, red below 30. In the editor the number is lower than in a built game, because the editor draws its own windows too.
 
 ## How it can progress

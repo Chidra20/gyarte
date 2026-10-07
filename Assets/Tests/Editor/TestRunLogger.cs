@@ -10,8 +10,10 @@ public static class TestRunLogger
 {
     public const string ResultsPath = "Temp/test-results.txt";
 
-    // name: a test class name (e.g. "HealthTests"), or "" for every EditMode test
-    public static void Run(string name)
+    // name: a test class name (e.g. "HealthTests"), or "" for every EditMode test.
+    // synchronous: run inside this call, so the results file is complete when it returns. Queued
+    // (asynchronous) runs could be cut off or never start when the editor reloaded meanwhile
+    public static void Run(string name, bool synchronous = true)
     {
         var api = ScriptableObject.CreateInstance<TestRunnerApi>();
         var callbacks = new Callbacks(string.IsNullOrEmpty(name) ? "all" : name, api);
@@ -19,7 +21,7 @@ public static class TestRunLogger
 
         var filter = new Filter { testMode = TestMode.EditMode };
         if (!string.IsNullOrEmpty(name)) filter.groupNames = new[] { name };
-        api.Execute(new ExecutionSettings(filter));
+        api.Execute(new ExecutionSettings(filter) { runSynchronously = synchronous });
     }
 
     class Callbacks : ICallbacks

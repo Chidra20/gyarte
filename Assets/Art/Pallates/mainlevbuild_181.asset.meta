@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: f5182d981c6692c4c9f935a414a42950
+labels:
+- Catacombs
+- Door
+- Doorway-Small-A
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

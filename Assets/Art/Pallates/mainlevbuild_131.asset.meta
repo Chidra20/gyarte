@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 397a7149020f8594784f8eb43aefbb89
+labels:
+- Archway-Large
+- Catacombs
+- Door
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

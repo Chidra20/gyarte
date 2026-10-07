@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 8403c4586cfcdec45b6df26a09d99ab7
+labels:
+- Catacombs
+- Gate
+- Gate-Bars
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

@@ -57,6 +57,7 @@ Only shown in a scene with a `WaveSpawner`. It shows the current wave and the ti
 ### Level
 
 - **Randomize level** builds a new level through the [[Level Randomizer]]. It removes all enemies first, because old enemies could end up inside the new walls and their pathfinders still remember the old ones ([[Pathfinding]]).
+- **Decorations** (only with a level style): which theme the current room has (and whether it is the exit), decorations on or off and a density multiplier for the next build, and spike trap hidden and out times and damage, applied to every trap in the level at once ([[Decorations]]).
 - **Show all rooms** turns the darkness off so the whole level and everything in it can be seen ([[Rooms and Darkness]]). It works by switching `RoomManager` off and hiding every overlay; turning it back on restores the normal one-room view.
 
 ### Game

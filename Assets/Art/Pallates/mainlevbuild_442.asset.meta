@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 guid: ed11c56604c96b74397bd904805cc547
+labels:
+- BurialWall-Brick
+- Catacombs
+- Wall
+- WallFace
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

@@ -28,6 +28,17 @@ The rest of the Week 2 plan was built as part of a bigger piece: a `Demo` scene 
 
 Slimes no longer lock on from anywhere; they're slower and get knocked back by hits, with the push strength adjustable. Rooms are bigger. Waves spawn only in the player's room, behind glowing warning markers. The key drops in the player's room. An FPS counter shows real frame rate with VSync off. See [[Game Loop]], [[Slime Enemy]], [[Combat]], [[HUD]].
 
+### Done (7 Oct 2026): richer levels
+
+The level randomizer uses the whole Catacombs pack:
+- Floors by colour, with stamps.
+- Pits and grates.
+- A barred stairs-down exit.
+- Themed rooms (crypt, storeroom, shrine, trap room) full of props, glowing torches and candles.
+- Spike traps that hurt both the player and slimes.
+
+Nothing can seal a room off; a flood fill checks every placement. See [[Decorations]] and [[Level Randomizer]].
+
 ### Still to do from Week 2
 
 - **Fix the remaining combat bug** listed under Known issues: the swing hitting through walls.
@@ -58,7 +69,7 @@ Slimes no longer lock on from anywhere; they're slower and get knocked back by h
 
 - More enemy types on a shared enemy base
 - Visited rooms shown dimmed, or real 2D lighting
-- Decoration pass with torches, candles and spikes from the art pack
+- Decoration pass with torches, candles, spikes, urns and coffins from the art pack. Everything in the pack is now identified ([[Catacombs Asset Catalog]]); the plan is data-driven decoration definitions placed by the randomizer
 - Level seeds, room roles (treasure, boss), loops between rooms
 - Sound and music; none exist yet
 - Menus, pause and save
@@ -67,6 +78,15 @@ Slimes no longer lock on from anywhere; they're slower and get knocked back by h
 
 | Issue | Where | Impact |
 |---|---|---|
+| Catacombs props import at 100 pixels per unit | [[Catacombs Asset Catalog]] | `decorative.png`, torches, candles and spikes would appear about six times too small; set them to 16 PPU, Point filter, no compression before using them |
+| Exit room can be a trap room if the stairs don't fit | [[Decorations]] | Only when the stairs-down archway can't be placed (never seen in 75+ test levels); the trap-room rule then doesn't know which room the fallback gate is in |
+| One-cell corridor beside the stairs | [[Level Randomizer]] | The stairs may stand one cell from a side wall; if a side doorway opens there, the way in is a narrow strip. Starting the stairs two cells from the walls would avoid it |
+| Torches ignore the density slider | [[Decorations]] | Density scales theme decorations only; torches are 1–3 per room unless density is 0 |
+| Bars draw over the player's head | [[Game Loop]] | Cosmetic: the stairs' bars are drawn above characters standing right in front of them |
+| Thin dark lines on tile edges | [[Level Randomizer]] | Faint 1-pixel lines appear on some tile edges at regular screen intervals, more visible on the one-colour floors. Pixel art with point filtering at a camera size that doesn't map tiles onto whole pixels samples the empty pixel next to a tile on the sheet. Fix: a Pixel Perfect Camera (URP 2D) with the Cinemachine pixel-perfect extension, which changes the camera's framing slightly |
+| Straight floor seam | [[Level Randomizer]] | Where a room's two floor patterns meet in a straight line, one pattern's mortar shows as a thin line across the room. Comes from the art; mixing patterns that share an edge would avoid it |
+| Torch glow near walls | [[Decorations]] | A torch's glow can still peek slightly past the wall into the room behind; it was shrunk to keep this small |
+| Low frame rate on weaker hardware | [[HUD]] | About 62 FPS on an RTX 2050 laptop plugged in, under 15 on battery (600 on an RTX 5060 Ti). Not optimised yet; to be looked at later. Measurements are kept in the [[HUD]] note |
 | Melee hits through walls | [[Combat]] | The swing's hit circle has no wall check |
 | Baby slimes move through walls | [[Slime Enemy]] | Now visible in play, since splitting works |
 | Pathfinder keeps old walls after a level rebuild | [[Pathfinding]] | Blocks slimes that live through a rebuild. The [[Test Menu]] sidesteps it by removing enemies when it randomizes; the Randomize button on the canvas does not |

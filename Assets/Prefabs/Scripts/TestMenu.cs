@@ -52,6 +52,9 @@ public class TestMenu : MonoBehaviour
     private WaveSpawner waveSpawner;
     private GameLoop gameLoop;
     private int waveTestLevel = 1;
+    private float spikeHidden = 2f;
+    private float spikeOut = 1.2f;
+    private int spikeDamage = 1;
     private Rect windowRect = new Rect(10f, 10f, 350f, 600f);
     private Vector2 scroll;
     private GUIStyle headerStyle;
@@ -574,6 +577,8 @@ public class TestMenu : MonoBehaviour
             status = "New level built.";
         }
 
+        if (levelRandomizer != null) DrawDecorations();
+
         if (roomManager != null)
         {
             bool show = GUILayout.Toggle(showAllRooms, " Show all rooms (no darkness)");
@@ -583,6 +588,43 @@ public class TestMenu : MonoBehaviour
                 if (show) HideDarkness();
                 else RestoreDarkness();
             }
+        }
+    }
+
+    // Decorations, themes and traps; applied on the next level build except the spike settings
+    void DrawDecorations()
+    {
+        if (levelRandomizer.style == null)
+        {
+            GUILayout.Label("No level style: rooms stay bare.");
+            return;
+        }
+
+        if (player != null)
+        {
+            int room = levelRandomizer.RoomIndexAt(player.transform.position);
+            string theme = levelRandomizer.RoomThemeAt(room);
+            GUILayout.Label("This room: " + (room < 0 ? "between rooms" : (theme == "" ? "no theme" : theme))
+                + (room >= 0 && room == levelRandomizer.ExitRoomIndex ? " (exit)" : ""));
+        }
+
+        levelRandomizer.decorate = GUILayout.Toggle(levelRandomizer.decorate, " Decorations (next build)");
+        Slider("Decoration density", ref levelRandomizer.decorationDensity, 0f, 3f);
+
+        SpikeTrap[] traps = FindObjectsByType<SpikeTrap>(FindObjectsInactive.Exclude);
+        GUILayout.Label("Spike traps in level: " + traps.Length);
+        Slider("Spikes hidden seconds", ref spikeHidden, 0.2f, 6f);
+        Slider("Spikes out seconds", ref spikeOut, 0.2f, 4f);
+        IntSlider("Spike damage", ref spikeDamage, 0, 5);
+        if (GUILayout.Button("Apply to all spike traps"))
+        {
+            foreach (SpikeTrap trap in traps)
+            {
+                trap.timings.hidden = spikeHidden;
+                trap.timings.outTime = spikeOut;
+                trap.damage = spikeDamage;
+            }
+            status = "Updated " + traps.Length + " spike traps.";
         }
     }
 

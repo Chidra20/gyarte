@@ -31,6 +31,8 @@ Every gameplay scene carries its own copy of the same trio: Main Camera (with a 
 | `Assets/Prefabs/UI/Settings Panel.prefab` | `Start Menu`, `testing the new thing` and `Demo`. See [[Menus and Game Flow]]. |
 | `Assets/Prefabs/UI/Health Label.prefab`, `Attack Corner.prefab` | `testing the new thing` and `Demo`. See [[HUD]]. |
 | `Assets/Prefabs/UI/Loop HUD.prefab`, `Ability Choice.prefab` | `Demo`. See [[Game Loop]]. |
+| `Assets/Prefabs/Level/` | The generated Catacombs Level Style, decoration prefabs (`Decor/`), Decoration assets and room themes. Built by **Tools > Catacombs > Build Level Style**. See [[Decorations]] |
+| `Assets/Prefabs/Stairs Gate.prefab` | The barred exit over the stairs, placed by the [[Game Loop]]. Built by the same menu |
 | `Assets/Prefabs/Spawn Marker.prefab` | The glowing warning on a spawn spot, placed by the wave spawner ([[Game Loop]]). Uses `Assets/Art/Placeholders/SoftGlow.png` |
 | `Assets/Prefabs/Key.prefab`, `Gate.prefab` | Placed by the [[Game Loop]]; also from the [[Test Menu]]. Placeholder art from `Assets/Art/Placeholders/`. |
 | `Assets/Prefabs/Abilities/` | The ability scripts, their assets and `Default Ability Pool`. See [[Inventory and Abilities]]. |
@@ -40,12 +42,14 @@ Every gameplay scene carries its own copy of the same trio: Main Camera (with a 
 **Catacombs tileset** — `Assets/Art/RF_Catacombs_v1.0/`
 
 - `mainlevbuild.png` is the main sheet: 16-pixel tiles at 16 pixels per unit, so one tile is one world unit. It is sliced into 1024 sprites.
-- `decorative.png`, torches, candles and spikes are imported but not used anywhere yet.
+- `decorative.png` (50 props: posts, chains, sarcophagi, coffins, urns), torches, candles and spikes are imported but not used anywhere yet. Each one is described in [[Catacombs Asset Catalog]]. They are imported at 100 pixels per unit instead of 16, so that needs fixing before they are used.
 - The pack's licence is in `public-license.txt`.
 
 **Tile assets** — `Assets/Art/Pallates/`
 
 One tile asset per sprite (`mainlevbuild_0` … `mainlevbuild_1023`) plus the `Catacombs` palette for painting by hand. The numbers do not follow the sheet row by row, so pick tiles by looking at them in the palette, not by counting.
+
+**Every tile is labelled with what it is** (Floor, WallFace, Door, Pit…). Search the Project window with `l:Floor`, `l:Door` and so on. The full list, the pictures and how it was worked out are in [[Catacombs Asset Catalog]].
 
 The [[Level Randomizer]] uses these groups:
 

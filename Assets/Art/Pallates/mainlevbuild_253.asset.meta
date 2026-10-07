@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 guid: 32e6fe8509d6a4748ba98d2947d37cc1
+labels:
+- Catacombs
+- Wall
+- WallColumn
+- WallFrame-A-Legs
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

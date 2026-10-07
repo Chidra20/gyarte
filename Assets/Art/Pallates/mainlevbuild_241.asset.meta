@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 guid: d982e0299fd903d488af1740cbcd9076
+labels:
+- Catacombs
+- Wall
+- WallOutline-Big
+- WallTop
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

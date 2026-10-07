@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7314071e530cf243ad20a361dbff581, type: 3}
+  m_Name: Sarcophagus
+  m_EditorClassIdentifier: Assembly-CSharp::Decoration
+  prefab: {fileID: 6251694424741371050, guid: 8b33b85b3563951418f9ed9bdf4ea21a, type: 3}
+  variants:
+  - {fileID: 6251694424741371050, guid: 8b33b85b3563951418f9ed9bdf4ea21a, type: 3}
+  - {fileID: 2263854171214199377, guid: 9e1b938f3b6e444428ab4e050b401ea5, type: 3}
+  rule: 3
+  footprint: {x: 3, y: 2}
+  blocks: 1
+  hazard: 0

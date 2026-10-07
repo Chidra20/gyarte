@@ -1,5 +1,8 @@
 fileFormatVersion: 2
 guid: ce2d486aad2a28c4ba696d49b11c9bc1
+labels:
+- Catacombs
+- Tileset
 TextureImporter:
   internalIDToNameTable:
   - first:

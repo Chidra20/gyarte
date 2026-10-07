@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9b8d711bf6cfd4e8c0adc807ff07f9, type: 3}
+  m_Name: Storeroom
+  m_EditorClassIdentifier: Assembly-CSharp::RoomTheme
+  themeName: Storeroom
+  isTrap: 0
+  entries:
+  - decoration: {fileID: 11400000, guid: c46a7bb0ba3a9684db87cada6a061789, type: 2}
+    min: 1
+    max: 3
+  - decoration: {fileID: 11400000, guid: f1a10ae1da24cf84788eb05b28a8a3c7, type: 2}
+    min: 3
+    max: 5
+  - decoration: {fileID: 11400000, guid: 4d607006ae8d1d5488e8316f3b37ece6, type: 2}
+    min: 1
+    max: 3
+  - decoration: {fileID: 11400000, guid: ca6dfcfc5482a0a4bb453584c710a4b8, type: 2}
+    min: 0
+    max: 1
+  - decoration: {fileID: 11400000, guid: 6e189551e56e247479694432fef139d6, type: 2}
+    min: 0
+    max: 1

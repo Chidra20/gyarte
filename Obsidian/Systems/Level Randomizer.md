@@ -20,6 +20,30 @@ Player, CinemachineCamera, Main Camera
 
 The scene is saved with a generated level already in it. On Play the randomizer only builds a new one if the floor tilemap is empty, so the level changes only when the button is pressed.
 
+## Richer levels (7 Oct 2026)
+
+With a **Level Style** assigned (`Catacombs Style`), a build does a lot more than lay out bare rooms. Without one, rooms stay as before.
+
+- **Occupancy.** One level-wide record of taken cells (`LevelOccupancy`): **blocked** (pillars, pits, blocking props), **hazard** (spikes), **reserved** (doorways and the cell in front, the spawn, the stairs and the two rows in front of them). Everything placed asks it first. Spawn points for waves and the key avoid blocked and hazard cells.
+- **Never sealed.** After every pit or blocking prop, a flood fill over the walkable floor checks that the spawn can still reach every doorway and the exit (`StillConnected`). If not, that piece is taken back out.
+- **Floors by colour.** Each room picks one of 6 colour families and mixes that family's three 2×2 patterns with the noise. Sometimes it stamps a smooth slab (2×3) or a plain ground patch (4×4) on top.
+- **Pits and grates.** At most one of each per room (never in the start room):
+  - **Pits** (6×6 square or 4×4 round) go on the **Walls** layer, so they block and slimes path around them. They keep 3 cells from the walls.
+  - **Grates** go on the new **Details** layer (walkable, no collider, drawn over the floor without replacing it). Their cells are reserved, so nothing else lands on them. A spike field under a grate would be hidden but still hurt.
+- **Stairs exit.** In the room farthest from the start, the stairs-down archway is built against the top wall, away from any doorway in that wall. Its frame goes on Walls and its steps on Details. The [[Game Loop]] puts the barred gate over it. If it doesn't fit, the old gate square is used.
+- **Decorations.** Each room gets a theme and its props, torches and traps; see [[Decorations]].
+
+The build order is: lay out rooms → reserve doorways and the spawn → floors and walls → doorways → stairs exit → per room: pillars, pits and grates, decorations, darkness object → move the player.
+
+**The Details tilemap.** A third tilemap under `Grid` (between Floor and Walls, order −1, no collider) holds walk-over pieces that are partly see-through: the stair steps and grates. Painting them on the Floor layer replaced the floor tile and left black where the art is transparent.
+
+**How the style data was made.** Tile numbers come from the [[Catacombs Asset Catalog]] via `Tools/catacombs-catalog/groups.py` (`style-tiles.txt`). The asset is built by **Tools > Catacombs > Build Level Style**. Nothing is picked by hand in code.
+
+Verified on 7 Oct 2026, over 15+ generated levels:
+- **Connectivity:** every level was fully connected.
+- **Stairs:** the stairs fitted every time.
+- **Pits and grates:** pits landed in about 1 in 5 rooms, grates in about 2 in 5.
+
 ## What one press does
 
 `Randomize()` runs these steps in order:
@@ -33,6 +57,12 @@ The scene is saved with a generated level already in it. On Play the randomizer 
 7. **Move the player** to the centre of the first room.
 
 Because every room attaches to an earlier one, the level is always fully connected.
+
+## How the tile lists were filled in
+
+The randomizer only knows which tiles are floor, wall pieces and pillars because someone filled in its Inspector lists (on the `Grid` object). That was done in Week 1 by an earlier Claude Code session. It looked at the Catacombs sheet, picked the tiles by eye, put them in the lists and checked the result in a scene capture. No record was kept of how. On 7 Oct 2026 the whole pack was catalogued and labelled ([[Catacombs Asset Catalog]]); the tiles in the lists are the groups `WallFrame-A`, `Floor-TileA`, `Floor-TileB`, `Floor-Rough` and the pillar groups there.
+
+To change what a room looks like: find tiles with the Project search (`l:Floor`, `l:WallFrame-B` …) and drag them into the lists on the `Grid` object's Level Randomizer.
 
 ## What it tells other systems about the level
 

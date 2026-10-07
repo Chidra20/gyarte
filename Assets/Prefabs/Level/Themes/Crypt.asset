@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9b8d711bf6cfd4e8c0adc807ff07f9, type: 3}
+  m_Name: Crypt
+  m_EditorClassIdentifier: Assembly-CSharp::RoomTheme
+  themeName: Crypt
+  isTrap: 0
+  entries:
+  - decoration: {fileID: 11400000, guid: 5f18481a7f5f6c24daf5614977ebd890, type: 2}
+    min: 1
+    max: 2
+  - decoration: {fileID: 11400000, guid: e5eadd3aee6f4f4499307d5e9147f64a, type: 2}
+    min: 0
+    max: 1
+  - decoration: {fileID: 11400000, guid: 259d840450b9c1d4d8b8873496fa9379, type: 2}
+    min: 1
+    max: 2
+  - decoration: {fileID: 11400000, guid: ca6dfcfc5482a0a4bb453584c710a4b8, type: 2}
+    min: 1
+    max: 2
+  - decoration: {fileID: 11400000, guid: 4fc47d4a50982d6428d49a5f75c56dd2, type: 2}
+    min: 1
+    max: 2
+  - decoration: {fileID: 11400000, guid: 1767243b1ce017c4b94a894cec0cd237, type: 2}
+    min: 1
+    max: 3

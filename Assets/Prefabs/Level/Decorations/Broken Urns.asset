@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7314071e530cf243ad20a361dbff581, type: 3}
+  m_Name: Broken Urns
+  m_EditorClassIdentifier: Assembly-CSharp::Decoration
+  prefab: {fileID: 356632235289897371, guid: b469686c9694a12428f1f4cc0bc2b578, type: 3}
+  variants:
+  - {fileID: 356632235289897371, guid: b469686c9694a12428f1f4cc0bc2b578, type: 3}
+  - {fileID: 1908031916069800187, guid: 1a42ed4df9454154bbdfd83ffd6a3d3b, type: 3}
+  - {fileID: 3648689268206383427, guid: cb8f00bbdb6208d40aebd2af50ed4b1e, type: 3}
+  - {fileID: 4195473401026373132, guid: 0c213a274a4f3ab45acea4aa19cad05c, type: 3}
+  - {fileID: 972068917551636418, guid: bd22eeeb41e0db14c8c2d8c1d71ac18f, type: 3}
+  - {fileID: 6108483638661377087, guid: f3357b956d29d714f9d7e03913396e22, type: 3}
+  - {fileID: 4079407430515799149, guid: 97d6e5cd5f362ab4389d7a32b770b099, type: 3}
+  - {fileID: 3473974083010195811, guid: b637b9d8bc0ba2f43b44175bde954f82, type: 3}
+  - {fileID: 8755218483911063015, guid: 20403fb1143e0d748aee458d3cdbc464, type: 3}
+  - {fileID: 7127558597095024233, guid: 6f61fa35945a4c44baba064afead8bf9, type: 3}
+  rule: 3
+  footprint: {x: 1, y: 1}
+  blocks: 0
+  hazard: 0

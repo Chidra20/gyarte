@@ -43,6 +43,11 @@ flowchart TD
     Choice -->|ability| Inventory
     PlayerHealth -->|died| Loop
     Loop -->|death: Start Menu| Menus[Menus]
+    Style[LevelStyle<br/>themes, floors, structures] --> Randomizer
+    Randomizer -->|places by theme| Decor[Decorations<br/>props, torches, spikes]
+    Randomizer -->|occupancy: free spots| Waves
+    Decor -->|spikes hurt| PlayerHealth
+    Decor -->|spikes hurt| Health
     Attack -->|cooldowns, reasons| HUD[HUD]
     PlayerHealth --> HUD
     Loop --> HUD
@@ -110,6 +115,9 @@ All gameplay scripts are in the default assembly, with no namespaces. `Ability` 
 | `GameLoop.cs`, `WaveSpawner.cs`, `LevelGraph.cs`, `KeyPickup.cs`, `Gate.cs`, `AbilityChoiceScreen.cs`, `LoopHud.cs` | `Assets/Prefabs/Scripts/` | [[Game Loop]] |
 | `Inventory.cs`; `Ability.cs`, `AbilityPool.cs` and the four abilities | `Assets/Prefabs/Scripts/`; `Assets/Prefabs/Abilities/` | [[Inventory and Abilities]] |
 | `HealthLabel.cs`, `AttackCorner.cs` | `Assets/Prefabs/Scripts/` | [[HUD]] |
+| `LevelOccupancy.cs`, `LevelStyle.cs` | `Assets/Prefabs/Scripts/` | [[Level Randomizer]] |
+| `Decoration.cs`, `RoomTheme.cs`, `DecorationPlacer.cs`, `FrameAnimator.cs`, `GlowFlicker.cs`, `SpikeTrap.cs` | `Assets/Prefabs/Scripts/` | [[Decorations]] |
+| `CatacombsStyleBuilder.cs`, `CatacombsDecorBuilder.cs`, `CatacombsLabels.cs` | `Assets/Prefabs/Scripts/Editor/` | [[Decorations]], [[Catacombs Asset Catalog]] |
 | `TestMenu.cs` | `Assets/Prefabs/Scripts/` | [[Test Menu]] |
 | Unit tests and `TestRunLogger` | `Assets/Tests/Editor/` | EditMode tests, run from the Test Runner window |
 

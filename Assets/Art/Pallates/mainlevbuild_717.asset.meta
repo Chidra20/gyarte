@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 992e5842ce106df418a172a870e9a815
+labels:
+- Catacombs
+- Floor
+- Floor-TileB
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

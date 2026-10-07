@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 guid: cea7f9c412dcde34e84745dd0698e331
+labels:
+- Catacombs
+- Wall
+- WallFace
+- WallFace-Cracked
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

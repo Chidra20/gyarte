@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 63ef016e0ed4b894baaef7611d18f65e
+labels:
+- Catacombs
+- Pillar
+- Pillar-Wide
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

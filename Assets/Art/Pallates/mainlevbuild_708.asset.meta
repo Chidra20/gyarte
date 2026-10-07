@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 5ba4a7c475884874a8dbad897987e3a3
+labels:
+- Catacombs
+- Grate
+- Grate-Water
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

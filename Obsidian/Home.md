@@ -19,16 +19,18 @@ This vault is the blueprint of the project: what exists, how the parts depend on
 | [[Slime Enemy]] | Big slime AI, splitting and merging |
 | [[Pathfinding]] | The grid A* the slime uses to walk around walls |
 | [[Game Loop]] | The run: random levels, waves, key and gate, ability choices, death |
+| [[Decorations]] | Room themes, props, torches, candles and spike traps, and how they are built |
 | [[Inventory and Abilities]] | Keys and abilities the player carries, and how abilities are made |
 | [[HUD]] | Health, the attack corner, and the loop's on-screen text |
 | [[Menus and Game Flow]] | Start menu, pause menu, settings, and how scenes follow each other |
 | [[Test Menu]] | The developer window for spawning enemies and changing settings live |
 | [[Scenes and Assets]] | Every scene, prefab and art source, and what each is for |
+| [[Catacombs Asset Catalog]] | What every sprite in the Catacombs art pack is, its asset labels, and how that was worked out |
 | [[Roadmap]] | What is done, what comes next, and known issues |
 
 ## Current state in one paragraph
 
-The player can move in four directions with matching animations ([[Player]]). Levels can be generated at the press of a button: several walled rooms joined by doorways, with every room but the current one hidden ([[Level Randomizer]], [[Rooms and Darkness]]). A start menu leads into the game and Escape opens a pause menu ([[Menus and Game Flow]]). A slime enemy can patrol, spot and chase the player around walls ([[Slime Enemy]], [[Pathfinding]]). The player fights with a scythe swing and a fire spell, both limited by a cooldown or charges, on a gamepad or the keyboard. A killed big slime splits into two babies that merge back unless one is killed. Slimes hurt the player by touching them ([[Combat]]). Since 5 Oct 2026 this is a game: Start opens the `Demo` scene. There each level is a fresh random layout, the player survives waves of slimes, finds the key, opens the gate and moves on, picking an ability every second level, until health runs out and the run ends back at the menu ([[Game Loop]], [[Inventory and Abilities]], [[HUD]]). New features are tried in `testing the new thing` first, and everything can be adjusted from the [[Test Menu]].
+The player can move in four directions with matching animations ([[Player]]). Levels can be generated at the press of a button: several walled rooms joined by doorways, with every room but the current one hidden ([[Level Randomizer]], [[Rooms and Darkness]]). A start menu leads into the game and Escape opens a pause menu ([[Menus and Game Flow]]). A slime enemy can patrol, spot and chase the player around walls ([[Slime Enemy]], [[Pathfinding]]). The player fights with a scythe swing and a fire spell, both limited by a cooldown or charges, on a gamepad or the keyboard. A killed big slime splits into two babies that merge back unless one is killed. Slimes hurt the player by touching them ([[Combat]]). Since 5 Oct 2026 this is a game: Start opens the `Demo` scene. There each level is a fresh random layout, the player survives waves of slimes, finds the key, opens the gate and moves on, picking an ability every second level, until health runs out and the run ends back at the menu ([[Game Loop]], [[Inventory and Abilities]], [[HUD]]). Since 7 Oct 2026 every room is themed and decorated from the Catacombs pack, with pits, spike traps and a barred staircase as the exit ([[Decorations]]). New features are tried in `testing the new thing` first, and everything can be adjusted from the [[Test Menu]].
 
 ## Keeping this vault true
 

@@ -43,3 +43,17 @@ The randomizer and menu work is uncommitted at the time of writing.
 Give the player an attack, give the player and enemies health, and let the slime hurt the player. This turns the existing pieces into a playable loop: enter a dark room, fight what is inside, move on.
 
 The plan and its open decisions are in [[Roadmap]].
+
+---
+
+## Week 2 — in progress (notes before the weekly entry)
+
+**7 Oct 2026, first frame rate measurements** with the new FPS counter, in `Demo` with VSync off, before any optimisation:
+
+| Machine | Power | FPS |
+|---|---|---|
+| Laptop: RTX 2050, Intel Core i5-1335U | Plugged in | about 62 |
+| Laptop: RTX 2050, Intel Core i5-1335U | On battery | under 15 |
+| Desktop: RTX 5060 Ti | — | about 600 |
+
+Optimisation is deferred; these numbers are the baseline to compare against ([[HUD]], [[Roadmap]]).

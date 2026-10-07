@@ -1,5 +1,8 @@
 fileFormatVersion: 2
 guid: 761bb069be03b814ab08de4b6e961f8c
+labels:
+- Catacombs
+- Void
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

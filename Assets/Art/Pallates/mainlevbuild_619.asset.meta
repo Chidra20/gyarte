@@ -1,5 +1,9 @@
 fileFormatVersion: 2
 guid: 2b175aeb9a6bcbe46a0cfc03541d69fe
+labels:
+- Catacombs
+- Pit
+- Pit-Square
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7314071e530cf243ad20a361dbff581, type: 3}
+  m_Name: Urns
+  m_EditorClassIdentifier: Assembly-CSharp::Decoration
+  prefab: {fileID: 7785787678558765723, guid: 04113be109897e6478f8aed845f84b7f, type: 3}
+  variants:
+  - {fileID: 7785787678558765723, guid: 04113be109897e6478f8aed845f84b7f, type: 3}
+  - {fileID: 8518504133223450128, guid: 0dc3ee87048f3044eb50b8b9710d9142, type: 3}
+  - {fileID: 558132701756306998, guid: edd96f9a0842072418cdc2c9918f7c88, type: 3}
+  - {fileID: 1262912243243647726, guid: 6a82db46e8d2fa34db83383cbd04db53, type: 3}
+  - {fileID: 7528845946705521214, guid: 41c4cd91657d5bb4390cb37a1395435a, type: 3}
+  - {fileID: 7182970574477036053, guid: 5cff8ff68904f3542817dea4c085ffcc, type: 3}
+  - {fileID: 3816934537605911746, guid: 478a19256fe1b02419bf2448d14e4abf, type: 3}
+  - {fileID: 2467100481230117378, guid: 6414265ce9286b946855b1e5b31d483c, type: 3}
+  rule: 2
+  footprint: {x: 1, y: 1}
+  blocks: 0
+  hazard: 0

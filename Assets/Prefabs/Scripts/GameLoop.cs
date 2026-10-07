@@ -20,6 +20,8 @@ public class GameLoop : MonoBehaviour
     [Header("Prefabs")]
     public KeyPickup keyPrefab;
     public Gate gatePrefab;
+    [Tooltip("Barred gate over the stairs-down exit; used when the level has stairs, else Gate Prefab is used.")]
+    public Gate stairsGatePrefab;
     public AbilityPool abilityPool;
 
     [Header("Rules")]
@@ -174,12 +176,19 @@ public class GameLoop : MonoBehaviour
     // In the room the most doors away from the start, so the whole level lies between them
     void PlaceGate()
     {
-        if (gatePrefab == null) return;
-
-        int room = LevelGraph.FarthestRoom(randomizer.Rooms.Count, randomizer.RoomLinks, randomizer.Rooms, randomizer.StartRoomIndex);
-        Vector2 spot = randomizer.TryGetRandomFloorPoint(room, out Vector2 point) ? point : randomizer.RoomCenter(room);
-
-        gate = Instantiate(gatePrefab, new Vector3(spot.x, spot.y, PlayerZ()), Quaternion.identity);
+        // The randomizer builds the stairs-down archway in the farthest room when one fits; the barred
+        // gate sits in its opening. Otherwise the plain gate square goes somewhere in that room
+        if (randomizer.HasStairsExit && stairsGatePrefab != null)
+        {
+            gate = Instantiate(stairsGatePrefab, new Vector3(randomizer.ExitPoint.x, randomizer.ExitPoint.y, PlayerZ()), Quaternion.identity);
+        }
+        else
+        {
+            if (gatePrefab == null) return;
+            int room = LevelGraph.FarthestRoom(randomizer.Rooms.Count, randomizer.RoomLinks, randomizer.Rooms, randomizer.StartRoomIndex);
+            Vector2 spot = randomizer.TryGetRandomFloorPoint(room, out Vector2 point) ? point : randomizer.RoomCenter(room);
+            gate = Instantiate(gatePrefab, new Vector3(spot.x, spot.y, PlayerZ()), Quaternion.identity);
+        }
         gate.Opened += () => Apply("gateOpened");
         gate.Entered += OnGateEntered;
         gate.NeedsKey += () => { if (hud != null) hud.ShowNeedKey(); };
