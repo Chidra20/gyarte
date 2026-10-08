@@ -67,7 +67,7 @@ Every change in normal play goes through one table (`GameLoop.Transition`) that 
 
 **How many.** The number of waves and the number of enemies per wave both grow with the level number, each up to a cap. Level 1 has two waves of three slimes; later levels have more and bigger waves. All the numbers are fields on the component and sliders in the [[Test Menu]].
 
-**Where they appear.** In the room the player is in when the wave starts, never in rooms the player hasn't reached. Each enemy gets a random free spot on that room's floor ([[Level Randomizer]]). A spot is refused when:
+**Where they appear.** Mostly in the room the player is in when the wave starts. Since 8 Oct 2026 each enemy has an `otherRoomChance` (0.5) of spawning in a random other room instead. An enemy in an unexplored room is hidden by the darkness and blind until the player enters that room ([[Rooms and Darkness]], [[Slime Enemy]]), so the player finds it while exploring. Each enemy gets a random free spot on its room's floor ([[Level Randomizer]]). A spot is refused when:
 
 - it is too close to the player, so nothing appears on top of them,
 - it is too close to another living enemy, so enemies don't stack,
@@ -141,7 +141,7 @@ In `Demo`, with god mode on until the death check:
 
 ## Changes after the first playtest (7 Oct 2026)
 
-- Waves only spawn in the player's current room, with glowing markers first; slimes are no longer told to chase on spawn.
+- Waves only spawn in the player's current room, with glowing markers first; slimes are no longer told to chase on spawn. (Changed on 8 Oct 2026: about half now spawn in other rooms, see above.)
 - The key drops in the player's room.
 - Rooms are bigger ([[Level Randomizer]]), slimes are slower and get knocked back when hit ([[Slime Enemy]], [[Combat]]).
 - An FPS counter in the corner ([[HUD]]).

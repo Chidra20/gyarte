@@ -29,6 +29,8 @@ stateDiagram-v2
 
 The slime sees the player when three things are true: the player is within range, inside the vision cone around the direction the slime is facing, and no collider tagged `wall` lies on the line between them. Spotting uses the shorter `detectionRange`; staying locked on uses the longer `losePlayerRange`.
 
+**Dark rooms** (added 8 Oct 2026). A slime standing in a room the player hasn't explored yet can't see the player at all, so it can't spot them through a doorway from the dark. It asks `RoomManager.IsRevealed` ([[Rooms and Darkness]]). Once the player enters that room it is lit for good and the slime sees normally. A hit still alerts it, even from the dark.
+
 ### Movement
 
 `MoveTowards` goes straight at the target when the way is clear. When a wall is in the way it asks the [[Pathfinding]] for a route and follows it, recalculating every `repathInterval`. Because the body is kinematic, walls do not physically stop it; staying out of walls is entirely the pathfinder's job.

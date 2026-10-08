@@ -2,7 +2,7 @@
 
 The player's two attacks and the health that enemies lose to them. Part of the [[Architecture]]; back to [[Home]].
 
-**Files:** `Assets/Prefabs/Scripts/PlayerAttack.cs`, `Assets/Prefabs/Scripts/FireProjectile.cs`, `Assets/Prefabs/FireProjectile.prefab`, `Assets/Prefabs/Enemies/Slime/Scripts/EnemyHeatlh.cs` (class `EnemyHealth`; the file name is misspelled), `Assets/Animations/Swing.anim`, `Assets/Animations/FireSpell.anim`, art in `Assets/Art/Attacks/`
+**Files:** `Assets/Prefabs/Scripts/PlayerAttack.cs`, `Assets/Prefabs/Scripts/FireProjectile.cs`, `Assets/Prefabs/FireProjectile.prefab`, `Assets/Prefabs/Enemies/Slime/Scripts/EnemyHeatlh.cs` (class `EnemyHealth`; the file name is misspelled), `Assets/Animations/Swing.anim`, `Assets/Animations/FireSpell.anim`, `Assets/Animations/FireSpellDown.anim`, art in `Assets/Art/Attacks/` and `Assets/LookingDownFireball.png`
 
 Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the input actions and two bugs in `EnemyHealth` were fixed. Since 5 Oct 2026 damage goes both ways: slimes hurt the player by touching them ([[Slime Enemy]]).
 
@@ -17,7 +17,13 @@ Added on 2 Oct 2026 by yumisyumm; the same day the attacks were moved onto the i
 
 **Scythe swing (melee).** Pressing the attack button plays the `Swing` animation, unless the swing is still on **cooldown**. The cooldown starts when a swing starts and is a little longer than the animation, so the swing cannot be spammed. Part-way through, at the moment the scythe is in front of the character, everything on the `Enemy` layer inside a circle in front of the player takes damage. The circle follows an `Attack` object that the script creates and keeps in front of the player every frame. The swing cannot be repeated until the animation has finished.
 
-**Fire spell (ranged).** Pressing the projectile button plays the `FireSpell` animation and, on the frame the fire leaves the hand, spawns a `FireProjectile`. The spell uses charges: a small number can be stored, each cast spends one, and they come back one at a time on a timer. The attack corner of the [[HUD]] shows the charges and the time until the next one.
+**Faster swing** (8 Oct 2026). The `Swing` state in `PlayerAnim.controller` plays at 1.35× speed, and the timings on `PlayerAttack` were scaled to match: the hit lands at `swingHitTime` 0.13 s (was 0.18), the swing lasts `swingDuration` 0.33 s (was 0.44), and `meleeCooldown` is 0.45 s (was 0.6). If the state speed changes again, divide these three by the new speed so the hit still lines up with the scythe.
+
+**Fire spell (ranged).** Pressing the projectile button plays the `FireSpell` animation and, on the frame the fire leaves the hand, spawns a `FireProjectile`. The spell uses charges: a small number can be stored, each cast spends one, and they come back one at a time on a timer (`maxSpellCharges` 2, `spellRechargeTime` 5 s). The recharge timer keeps running between casts, so casting twice 3 s apart gives a charge back 2 s after the second cast. The [[HUD]] shows the charges as blue **stamina hearts** (one heart = two casts) and in the attack corner.
+
+**Casting down** (added 8 Oct 2026). Facing down plays `FireSpell_Down`, made from `LookingDownFireball.png`. That sheet was drawn with the fire included, so it is cut in two: the top of each frame is the character (the cast animation) and the fire below it becomes the fireball's down frames. The fire starts between both hands (`castDownHand`). Casting up still uses the side animation.
+
+**Moving out of a cast** (added 8 Oct 2026). The cast pose is only locked until the fireball leaves the hand (`IsAnimationLocked`). After that, pressing a direction ends the spell straight away: the run animation takes over, the player can turn, and the next attack or dash is allowed at once. Standing still lets the whole cast play. The swing stays locked for its full length.
 
 **Knockback.** A hit pushes the enemy back (see `EnemyKnockback` in [[Slime Enemy]]). The strength is set per attack on `PlayerAttack`: `meleeKnockback` for the swing (away from the player) and `spellKnockback` for the fireball (along its flight). Both are in the Inspector and as sliders in the [[Test Menu]]; 0 turns knockback off. A lethal hit doesn't push, since the enemy splits or dies.
 
@@ -38,6 +44,8 @@ Damage, swing range, the hitbox display and the spell's charges can all be chang
 - It flies in a straight line and **stops at anything tagged `wall`**, the same contract the slime uses ([[Architecture]]).
 - It **pierces enemies**: every enemy it passes through is damaged once and the bolt keeps going until it hits a wall or reaches its maximum range.
 - It only damages **enemies that existed when it was cast**. Baby slimes that appear mid-flight are ignored, so one fireball cannot kill a big slime and then its babies in the same pass.
+- It **burns** what it hits (added 8 Oct 2026): `burnDuration` 3 s, `burnDamagePerTick` 1 every `burnTickInterval` 1 s, so 3 extra damage. Hitting a burning enemy restarts the burn instead of stacking it. The burn runs in `EnemyHealth` and makes the enemy flicker orange. With the big slime at 2 health, one fireball always kills it (the hit plus the first tick).
+- **Shooting down** it uses the hand-drawn down flames (`downLaunchFrames`, `downFlyFrames`, `downFadeFrames`) without rotating them; every other direction rotates the side flame.
 - It carries a small 2D light as a glow. Scenes without any 2D light render fully lit, and adding the first light would turn everything else dark, so the projectile creates a plain white global light the first time one is launched in a scene that has none.
 
 ## Health
@@ -56,6 +64,7 @@ Two details protect it from same-frame trouble:
 - A non-lethal hit flashes the sprite, and on a big slime it calls `BigSlime.Alert()`, so a slime hit from behind turns and chases ([[Slime Enemy]]).
 - At zero health, a **big slime** calls `BigSlime.DieAndSplit()`; anything else is destroyed. This is how baby slimes die.
 - The attacks still call `EnemyHealth.TakeDamage`, which passes the hit on to `Health`.
+- `ApplyBurn()` sets the enemy on fire (from the fireball). The burn deals its ticks through `Health`, flickers the sprite toward `burnColor` and stops when the enemy dies. The hit flash wins over the flicker while it shows.
 
 `SetMaxHealth()` gives a single enemy a different amount of health from its prefab. The [[Test Menu]] uses it when spawning.
 
@@ -70,6 +79,13 @@ Two details protect it from same-frame trouble:
 - Two lethal hits in one frame give two babies, and a slime hit in the frame it spawns keeps its health.
 
 Not tested: the fireball stopping at a wall.
+
+## Verified in Play mode (8 Oct 2026, `Demo`)
+
+- Casting down plays `FireSpell_Down` and the fireball shows the down flames from launch to fade.
+- A test dummy burns for 3 s, then returns to its normal colour; a burning big slime dies about a second after the hit and splits.
+- Two casts take the stamina heart from full to half to empty, a third is refused, and it refills half after 5 s and full after 10 s.
+- Not tested by hand: switching to the run animation by moving out of a cast (simulated key presses didn't reach the editor).
 
 ## Known problems
 
@@ -86,4 +102,5 @@ Not tested: the fireball stopping at a wall.
 
 ## How it can progress
 
-- Turn `EnemyHealth` into a general `Health` with a death event, so the player and future enemies can share it.
+- A cast-up animation (art in progress); up/down swing animations.
+- Balance the burn against slime health (raise the big slime to 3–4 health, or tick every 1.5 s) if one fireball per slime is too strong.

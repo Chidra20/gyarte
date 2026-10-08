@@ -25,11 +25,11 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("Moves the hitbox down a little when facing left/right, where the scythe sweeps lower.")]
     public float attackPointSidewaysHeight = -0.15f;
     [Tooltip("Seconds into the Swing animation when the scythe is in front and enemies get hit.")]
-    public float swingHitTime = 0.18f;
-    [Tooltip("Length of the Swing animation. You can't swing again or cast until it ends.")]
-    public float swingDuration = 0.44f;
+    public float swingHitTime = 0.13f;
+    [Tooltip("Length of the Swing animation (the Swing state plays at 1.35x speed). You can't swing again or cast until it ends.")]
+    public float swingDuration = 0.33f;
     [Tooltip("Seconds from the start of one swing until the next one is allowed. Keep it at least as long as swingDuration.")]
-    public float meleeCooldown = 0.6f;
+    public float meleeCooldown = 0.45f;
 
     [Header("Melee Hitbox Display")]
     public bool showHitbox = false;

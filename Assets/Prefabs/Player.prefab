@@ -458,9 +458,9 @@ MonoBehaviour:
   attackRange: 0.75
   attackPointDistance: 0.95
   attackPointSidewaysHeight: -0.15
-  swingHitTime: 0.18
-  swingDuration: 0.44
-  meleeCooldown: 0.6
+  swingHitTime: 0.13
+  swingDuration: 0.33
+  meleeCooldown: 0.45
   showHitbox: 0
   hitboxColor: {r: 1, g: 0.1, b: 0.1, a: 0.9}
   hitboxFlashColor: {r: 1, g: 0.9, b: 0.2, a: 1}

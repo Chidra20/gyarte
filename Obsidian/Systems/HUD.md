@@ -2,33 +2,38 @@
 
 What the player sees on top of the game: health and the state of their attacks. Part of the [[Architecture]]; back to [[Home]].
 
-**Files:** `Assets/Prefabs/Scripts/HealthLabel.cs`, `Assets/Prefabs/Scripts/AttackCorner.cs`, prefabs `Assets/Prefabs/UI/Health Label.prefab` and `Assets/Prefabs/UI/Attack Corner.prefab`
+**Files:** `Assets/Prefabs/Scripts/HealthBar.cs`, `Assets/Prefabs/Scripts/HeartsDisplay.cs`, `Assets/Prefabs/Scripts/AttackCorner.cs`, prefabs `Assets/Prefabs/UI/Health Label.prefab` and `Assets/Prefabs/UI/Attack Corner.prefab`, art in `Assets/Art/healthstamina/`
 
-Added on 5 Oct 2026 as part of the game loop work ([[Roadmap]]). Plain UGUI with Unity's built-in font, like the menus; there is no HUD art yet.
+Added on 5 Oct 2026 as part of the game loop work ([[Roadmap]]). Plain UGUI with Unity's built-in font, like the menus. The health and stamina art was added on 8 Oct 2026.
 
-## Health label (top left)
+## Health bar and stamina hearts (top left)
 
-Shows the player's health as `HP 7/10`. It listens to the player's `Health` and redraws only when health changes, turning red when health is low ([[Player]], [[Combat]]).
+The `Health Label` prefab kept its name but no longer shows text. It has two parts:
 
-In `testing the new thing` it sits under the Randomize button. In the prefab it is in the top-left corner.
+- **Health bar (red).** `HealthBar` listens to the player's `Health` ([[Player]]) and slides a filled image to the new value (`fillSpeed` 4). On damage a lighter **damage trail** stays at the old value for `trailDelay` 0.35 s and then drains down (`trailSpeed` 0.8), so the size of the hit is visible. Healing moves the trail up at once.
+- **Stamina hearts (blue).** `HeartsDisplay` with source `SpellCharges` shows the fire spell's charges ([[Combat]]). One heart is two charges: full, half or empty. A heart pops briefly when it changes, and hearts are added or removed if the maximum changes (abilities, [[Inventory and Abilities]]). The same component can show health as hearts with source `Health`, but it isn't used that way.
+
+The art is the user's sheet `Untitled_2-9aa1.png` (heart slices: `_0` full, `_3` half, `_4` empty; `_5` the bar). The bar was split into `HealthBar_Frame.png` (68×10) and `HealthBar_Fill.png` (36×6) so the fill can shrink inside the frame. Everything is drawn at 5× with point filtering so the pixels stay sharp.
+
+`HealthLabel.cs` (the old `HP 7/10` text) is still in the project but no longer used.
 
 ## Attack corner (bottom left)
 
-Two slots, **Swing** and **Fire**. Each answers three questions at a glance:
+Three slots, **Swing**, **Fire** and **Dash** (the dash slot only appears if the player has `PlayerDash`, [[Player]]). Each answers three questions at a glance:
 
 - **Can I use it?** A dark cover over the slot shrinks as the attack comes back. No cover means ready.
 - **How long until I can?** The bottom line counts down in seconds.
 - **Why not?** The bottom line names the reason:
   - **Ready**
-  - **Busy**: the other attack is still playing (only one can run at a time)
-  - **Cooldown**: the swing was used too recently
+  - **Busy**: another attack or the dash is still playing (only one can run at a time)
+  - **Cooldown**: the swing or the dash was used too recently
   - **No charges**: every fire spell charge is spent; the timer is the time until the next one comes back
 
 The Fire slot also shows its charges as dots, filled for each one available.
 
 Both attacks have a limit, so neither can be spammed: the swing has a cooldown that starts when it is swung, and the fire spell has charges that come back one at a time ([[Combat]]).
 
-The corner reads everything from `PlayerAttack` every frame. The reasons are decided there, not in the HUD, so anything else that needs them (an AI hint, a sound) gets the same answer. The slots build themselves when the game starts, so the prefab is a single object.
+The corner reads everything from `PlayerAttack` and `PlayerDash` every frame. The reasons are decided there, not in the HUD, so anything else that needs them (an AI hint, a sound) gets the same answer. The slots build themselves when the game starts, so the prefab is a single object.
 
 ## FPS counter (bottom right)
 
@@ -54,6 +59,7 @@ Colours: green at 60 or more, yellow from 30, red below 30. In the editor the nu
 
 ## How it can progress
 
-- Icons and art for the slots; a hit flash on the health label.
+- Icons and art for the slots in the attack corner.
+- Rename the `Health Label` prefab and delete `HealthLabel.cs`, now that it is a bar.
 - More slots as abilities that can be used actively are added ([[Inventory and Abilities]]).
 - The loop's own HUD (level and wave, objective, inventory, banner, death screen) is described in [[Game Loop]]. It exists only in `Demo`.
