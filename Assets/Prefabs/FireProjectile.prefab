@@ -118,6 +118,17 @@ MonoBehaviour:
   - {fileID: -2577820074376719455, guid: 6b49959b01faf924192f999fbc3d16ab, type: 3}
   - {fileID: -4217266348310329800, guid: 6b49959b01faf924192f999fbc3d16ab, type: 3}
   framesPerSecond: 18
+  downLaunchFrames:
+  - {fileID: 2116944346, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  downFlyFrames:
+  - {fileID: 2008542752, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  - {fileID: -972796107, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  - {fileID: 602253357, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  downFadeFrames:
+  - {fileID: 992734938, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  - {fileID: 1213966601, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  - {fileID: 810509107, guid: 0414347467699884f8810fb17be3e33e, type: 3}
+  downHeadOffset: 0.9
   speed: 8
   maxDistance: 7
   headOffset: 0.6

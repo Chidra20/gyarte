@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// HUD corner showing the player's two attacks: whether each one can be used, how long until it can,
+// HUD corner showing the player's two attacks and the dash: whether each one can be used, how long until it can,
 // and why not. Builds its own slots at start, so the prefab is just this component on a canvas child.
 public class AttackCorner : MonoBehaviour
 {
     [Header("Player (found by the Player tag when empty)")]
     public PlayerAttack attack;
+    public PlayerDash dash;
 
     [Header("Look")]
     public Vector2 slotSize = new Vector2(110f, 110f);
@@ -27,6 +28,7 @@ public class AttackCorner : MonoBehaviour
 
     private Slot swingSlot;
     private Slot fireSlot;
+    private Slot dashSlot;
     private Font font;
 
     // "" → "Ready"; "Busy" → "Busy"; anything else gets the seconds left, e.g. "No charges 2.3s"
@@ -39,15 +41,20 @@ public class AttackCorner : MonoBehaviour
 
     void Start()
     {
-        if (attack == null)
+        if (attack == null || dash == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null) attack = player.GetComponent<PlayerAttack>();
+            if (player != null)
+            {
+                if (attack == null) attack = player.GetComponent<PlayerAttack>();
+                if (dash == null) dash = player.GetComponent<PlayerDash>();
+            }
         }
 
         font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         swingSlot = BuildSlot("Swing", 0);
         fireSlot = BuildSlot("Fire", 1);
+        if (dash != null) dashSlot = BuildSlot("Dash", 2);
     }
 
     // Unscaled reads only, so the corner stays correct while the game is paused
@@ -64,6 +71,14 @@ public class AttackCorner : MonoBehaviour
         if (spellReason == "Busy") spellCover = 1f;
         Show(fireSlot, spellReason, attack.SecondsToNextCharge, spellCover);
         fireSlot.extra.text = ChargeDots(attack.SpellCharges, attack.maxSpellCharges);
+
+        if (dash != null && dashSlot != null)
+        {
+            string dashReason = dash.BlockedReason;
+            float dashCover = dashReason == "Busy" ? 1f : dashReason == "" ? 0f : dash.CooldownFraction;
+            Show(dashSlot, dashReason, dash.CooldownRemaining, dashCover);
+            dashSlot.extra.text = "";
+        }
     }
 
     void Show(Slot slot, string reason, float seconds, float cover)

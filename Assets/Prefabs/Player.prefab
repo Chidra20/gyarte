@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 1311608086822324253}
   - component: {fileID: 1649698435905745790}
   - component: {fileID: 4902874641842275823}
+  - component: {fileID: 3405531286685589679}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -447,6 +448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackDamage: 1
+  meleeKnockback: 8
+  spellKnockback: 5
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
@@ -476,6 +479,7 @@ MonoBehaviour:
   handDistance: 0.4
   handHeight: -0.07
   sideHandOffset: 0.25
+  castDownHand: {x: -0.02, y: -0.6}
 --- !u!114 &1311608086822324253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,3 +521,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8777d85c2378848b3b5dc159d667ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
+--- !u!114 &3405531286685589679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6672797255328993099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c082bb59df9b574581681b7c08ebb66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDash
+  dashAction: {fileID: 4851400765802001472, guid: b5bf6cff86b4b7a428a8c0ae472d6060, type: 3}
+  dashDistance: 3.75
+  dashTime: 0.2
+  cooldown: 0.6
+  invulnerable: 1
+  ghostInterval: 0.035
+  ghostLifetime: 0.2
+  ghostColor: {r: 0.55, g: 0.7, b: 1, a: 0.55}

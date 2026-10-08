@@ -42,6 +42,8 @@ public class BigSlime : MonoBehaviour
     private State state = State.Patrol;
 
     private Transform player;
+    private RoomManager roomManager;
+    private bool roomManagerSearched;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -260,6 +262,14 @@ public class BigSlime : MonoBehaviour
     bool CanSeePlayer(float range, bool useFieldOfView)
     {
         if (player == null) return false;
+
+        // A slime in a room the player hasn't explored yet (still dark) can't see them
+        if (!roomManagerSearched)
+        {
+            roomManager = FindAnyObjectByType<RoomManager>();
+            roomManagerSearched = true;
+        }
+        if (roomManager != null && !roomManager.IsRevealed(rb.position)) return false;
 
         Vector2 toPlayer = (Vector2)player.position - rb.position;
         if (toPlayer.magnitude > range) return false;

@@ -43,6 +43,8 @@ public class WaveSpawner : MonoBehaviour
     public int maxPerRadius = 3;
     [Tooltip("Random spots tried per enemy before giving up on it. A wave may come up short in a small level.")]
     public int spawnAttemptsPerEnemy = 15;
+    [Tooltip("Chance for each enemy to spawn in a random other room instead of the player's. Enemies in rooms the player hasn't explored can't see them.")]
+    [Range(0f, 1f)] public float otherRoomChance = 0.5f;
 
     public int CurrentWave { get; private set; }
     public int TotalWaves { get; private set; }
@@ -253,6 +255,15 @@ public class WaveSpawner : MonoBehaviour
     Vector2? SampleFloorPoint()
     {
         int room = SpawnRoom(randomizer.RoomIndexAt(player.position), randomizer.StartRoomIndex);
+
+        // Sometimes somewhere else in the level, so the player has to go looking
+        int roomCount = randomizer.Rooms.Count;
+        if (roomCount > 1 && UnityEngine.Random.value < otherRoomChance)
+        {
+            int other = UnityEngine.Random.Range(0, roomCount - 1);
+            room = other >= room ? other + 1 : other;
+        }
+
         return randomizer.TryGetRandomFloorPoint(room, out Vector2 point) ? point : (Vector2?)null;
     }
 }

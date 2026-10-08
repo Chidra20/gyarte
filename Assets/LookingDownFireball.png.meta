@@ -1,0 +1,603 @@
+fileFormatVersion: 2
+guid: 0414347467699884f8810fb17be3e33e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3505156797547083008
+    second: LookingDownFireball_0
+  - first:
+      213: 6369538499175494282
+    second: LookingDownFireball_1
+  - first:
+      213: 5073871959632799200
+    second: LookingDownFireball_2
+  - first:
+      213: -4705320791482366096
+    second: LookingDownFireball_3
+  - first:
+      213: 4868522960363770694
+    second: LookingDownFireball_4
+  - first:
+      213: 3334041805422595713
+    second: LookingDownFireball_5
+  - first:
+      213: 4937732292905034275
+    second: LookingDownFireball_6
+  - first:
+      213: -4791574724848931651
+    second: LookingDownFireball_7
+  - first:
+      213: 2006684016048901387
+    second: LookingDownFireball_8
+  - first:
+      213: -382263063092473546
+    second: LookingDownFireball_9
+  - first:
+      213: 6453118621749079687
+    second: LookingDownFireball_10
+  - first:
+      213: 6360604612045606353
+    second: LookingDownFireball_11
+  - first:
+      213: -192231083035768987
+    second: LookingDownFireball_12
+  - first:
+      213: 4191507175111511174
+    second: LookingDownFireball_13
+  - first:
+      213: 6067882350689263359
+    second: LookingDownFireball_14
+  - first:
+      213: -292601972706666791
+    second: LookingDownFireball_15
+  - first:
+      213: 402149749785311706
+    second: LookingDownFireball_16
+  - first:
+      213: -182867739949755005
+    second: LookingDownFireball_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 30
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DownCast_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 54
+        width: 93
+        height: 56
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.48214287}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4816a62f4914414f93bf5b269e44379
+      internalID: 306604273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_1
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 54
+        width: 93
+        height: 56
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.48214287}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c5da3b3d513863438ad0b259f6e2b0f
+      internalID: 872740022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_2
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 54
+        width: 93
+        height: 56
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.48214287}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b916d762d8f897449b746f99f4ced6a
+      internalID: -1472409169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_3
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 54
+        width: 93
+        height: 56
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.48214287}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4eb76f6c01165c048870aa98255e2195
+      internalID: 129599070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_4
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26996519f13e0e54caf1ae024c77f3d8
+      internalID: -1474709395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_4
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34e41a6ae680cd142a86b7351b736844
+      internalID: 2116944346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_5
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 590dbdd5b0f14734bb81a07c3f7c7e1a
+      internalID: -1422625114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_5
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3882250d0924cb849b8e8719aee65603
+      internalID: 2008542752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_6
+      rect:
+        serializedVersion: 2
+        x: 558
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92e0a974b8d7dc347a97a4b5d7bbf6c8
+      internalID: 749792592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_6
+      rect:
+        serializedVersion: 2
+        x: 558
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 178703862d6d93f48b23dcb1aedcfd87
+      internalID: -972796107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_7
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76d135c1940f4114d9ddc2a392b5f3ec
+      internalID: 725621826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_7
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bd8607cbc7cf3246b080b77cb1a5f13
+      internalID: 602253357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_8
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ab9f51b42b63d04aaaf290627d6dc33
+      internalID: -1357167813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_8
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bfa29b663dc8a14283f5ac3541a8a21
+      internalID: 992734938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_9
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d45c3b781ab78e043abdedb4932105c5
+      internalID: 1955248054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_9
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8b7558025ffa344c9976ee386ac4c68
+      internalID: 1213966601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownCast_10
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 63
+        width: 93
+        height: 47
+      alignment: 9
+      pivot: {x: 0.50537634, y: 0.38297874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bf41a2e04d283d428aecd34ccc30203
+      internalID: -939238824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DownFire_10
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 0
+        width: 93
+        height: 63
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebaea46bd403b9c4cbe724d540a55ee9
+      internalID: 810509107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6e21e1db5d3e3e547ad2806f27e9a490
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DownCast_0: 306604273
+      DownCast_1: 872740022
+      DownCast_10: -939238824
+      DownCast_2: -1472409169
+      DownCast_3: 129599070
+      DownCast_4: -1474709395
+      DownCast_5: -1422625114
+      DownCast_6: 749792592
+      DownCast_7: 725621826
+      DownCast_8: -1357167813
+      DownCast_9: 1955248054
+      DownFire_10: 810509107
+      DownFire_4: 2116944346
+      DownFire_5: 2008542752
+      DownFire_6: -972796107
+      DownFire_7: 602253357
+      DownFire_8: 992734938
+      DownFire_9: 1213966601
+      LookingDownFireball_0: -3505156797547083008
+      LookingDownFireball_1: 6369538499175494282
+      LookingDownFireball_10: 6453118621749079687
+      LookingDownFireball_11: 6360604612045606353
+      LookingDownFireball_12: -192231083035768987
+      LookingDownFireball_13: 4191507175111511174
+      LookingDownFireball_14: 6067882350689263359
+      LookingDownFireball_15: -292601972706666791
+      LookingDownFireball_16: 402149749785311706
+      LookingDownFireball_17: -182867739949755005
+      LookingDownFireball_2: 5073871959632799200
+      LookingDownFireball_3: -4705320791482366096
+      LookingDownFireball_4: 4868522960363770694
+      LookingDownFireball_5: 3334041805422595713
+      LookingDownFireball_6: 4937732292905034275
+      LookingDownFireball_7: -4791574724848931651
+      LookingDownFireball_8: 2006684016048901387
+      LookingDownFireball_9: -382263063092473546
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

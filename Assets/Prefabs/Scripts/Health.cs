@@ -15,6 +15,8 @@ public class Health : MonoBehaviour
     public bool IsInvulnerable => lastHitTime > float.NegativeInfinity && clock() < lastHitTime + invulnerableTime;
     // Set from the Test Menu: hits are ignored entirely
     public bool GodMode { get; set; }
+    // Set by the dash: hits are ignored while dodging (kept apart from GodMode so the Test Menu toggle survives a dash)
+    public bool Dodging { get; set; }
 
     // current, max
     public event Action<int, int> Changed;
@@ -38,7 +40,7 @@ public class Health : MonoBehaviour
     {
         // Destroy only happens at the end of the frame, so a second hit in the same frame
         // must not kill the same thing twice
-        if (IsDead || GodMode || amount <= 0 || IsInvulnerable) return false;
+        if (IsDead || GodMode || Dodging || amount <= 0 || IsInvulnerable) return false;
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
         lastHitTime = clock();

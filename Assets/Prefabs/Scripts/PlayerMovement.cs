@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 knockbackVelocity;
     private float knockbackUntil;
 
+    public bool IsMoving => movement != Vector2.zero;
+    // The stick / WASD direction this frame (normalized, zero when not moving)
+    public Vector2 MoveInput => movement;
+
+    private PlayerDash dash;
+
     // Which way the player faces, as a direction (used to aim attacks)
     public Vector2 FacingVector => facingDirection switch
     {
@@ -43,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         attack = GetComponent<PlayerAttack>();
+        dash = GetComponent<PlayerDash>();
 
         if (visual == null)
         {
@@ -75,8 +82,10 @@ public class PlayerMovement : MonoBehaviour
         movement = moveAction.action.ReadValue<Vector2>();
         movement = movement.normalized;
 
-        // While swinging or casting: keep facing the same way and let the attack animation play out
-        bool attacking = attack != null && attack.IsAttacking;
+        // While the attack pose is locked (the whole swing, or a cast until the fireball is out):
+        // keep facing the same way and let the attack animation play
+        // A dash locks the same way, so the dash animation plays instead of the run cycle
+        bool attacking = (attack != null && attack.IsAnimationLocked) || (dash != null && dash.IsDashing);
         if (attack != null && attack.IsCasting && attack.lockMovementWhileCasting)
             movement = Vector2.zero;
 

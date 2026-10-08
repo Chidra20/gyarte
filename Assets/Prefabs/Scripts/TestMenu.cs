@@ -645,15 +645,8 @@ public class TestMenu : MonoBehaviour
     {
         if (roomManager == null) return;
 
-        foreach (Transform room in roomManager.transform)
-        {
-            SpriteRenderer overlay = room.GetComponent<SpriteRenderer>();
-            BoxCollider2D box = room.GetComponent<BoxCollider2D>();
-            if (overlay == null) continue;
-
-            bool playerInside = player != null && box != null && box.OverlapPoint(player.transform.position);
-            overlay.enabled = !playerInside;
-        }
+        // Visited rooms stay lit, unvisited ones go dark again
+        roomManager.RefreshDarkness(true);
         roomManager.enabled = true;
     }
 

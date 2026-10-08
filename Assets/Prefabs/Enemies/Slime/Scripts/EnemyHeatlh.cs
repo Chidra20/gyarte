@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// The enemy side of Health: the hit flash, waking a slime that gets hit, and what dying means
+// The enemy side of Health: the hit flash, burning, waking a slime that gets hit, and what dying means
 // (a big slime splits, anything else is destroyed). Also keeps the list of living enemies
 // that the wave spawner counts.
 [RequireComponent(typeof(Health))]
@@ -12,6 +12,12 @@ public class EnemyHealth : MonoBehaviour
     [Header("Hit Flash")]
     public Color hitFlashColor = new Color(1f, 0.45f, 0.3f, 1f);
     public float hitFlashTime = 0.12f;
+
+    [Header("Burning")]
+    [Tooltip("Color the enemy flickers toward while on fire.")]
+    public Color burnColor = new Color(1f, 0.55f, 0.15f, 1f);
+    [Tooltip("How fast the burn flicker pulses.")]
+    public float burnFlickerSpeed = 12f;
 
     // Every enemy that is alive right now, babies included
     private static readonly HashSet<EnemyHealth> alive = new HashSet<EnemyHealth>();
@@ -31,6 +37,8 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
+    public bool IsBurning => burnTimeLeft > 0f;
+
     // Tests replace what death does, since they cannot spawn real slimes
     [NonSerialized] public Action onDeathOverride;
 
@@ -38,6 +46,12 @@ public class EnemyHealth : MonoBehaviour
     private BigSlime bigSlime;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
+    private bool flashing;
+
+    private float burnTimeLeft;
+    private float burnTickTimer;
+    private float burnTickInterval;
+    private int burnDamagePerTick;
 
     // Public so EditMode tests can call it. Awake, not OnEnable or Start: a slime made by a merge
     // has to count as alive before the two babies that made it are gone, or a wave would look cleared
@@ -60,6 +74,35 @@ public class EnemyHealth : MonoBehaviour
         Unregister(this);
     }
 
+    void Update()
+    {
+        if (burnTimeLeft <= 0f || Health.IsDead) return;
+
+        // Burn: damage every tick until the time runs out
+        burnTimeLeft -= Time.deltaTime;
+        burnTickTimer -= Time.deltaTime;
+        if (burnTickTimer <= 0f)
+        {
+            burnTickTimer += burnTickInterval;
+            Health.TakeDamage(burnDamagePerTick);
+            if (Health.IsDead) return;
+        }
+
+        // The hit flash wins while it shows; otherwise flicker, and go back to normal when the burn ends
+        if (spriteRenderer != null && !flashing)
+        {
+            if (burnTimeLeft > 0f)
+            {
+                float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * burnFlickerSpeed);
+                spriteRenderer.color = Color.Lerp(originalColor, burnColor, 0.35f + 0.45f * pulse);
+            }
+            else
+            {
+                spriteRenderer.color = originalColor;
+            }
+        }
+    }
+
     // Gives this enemy a different amount of health than its prefab has, at full health
     public void SetMaxHealth(int amount)
     {
@@ -79,6 +122,18 @@ public class EnemyHealth : MonoBehaviour
         if (push != null) push.Push(knockback);
     }
 
+    // Sets the enemy on fire. Hitting a burning enemy again restarts the burn instead of stacking it.
+    public void ApplyBurn(float duration, int damagePerTick, float tickInterval)
+    {
+        if (Health.IsDead || duration <= 0f) return;
+
+        bool wasBurning = IsBurning;
+        burnTimeLeft = duration;
+        burnDamagePerTick = damagePerTick;
+        burnTickInterval = Mathf.Max(0.05f, tickInterval);
+        if (!wasBurning) burnTickTimer = burnTickInterval; // first tick one interval after catching fire
+    }
+
     void OnDamaged()
     {
         // Getting hit makes the slime notice the player, even from behind
@@ -93,13 +148,17 @@ public class EnemyHealth : MonoBehaviour
 
     IEnumerator HitFlash()
     {
+        flashing = true;
         spriteRenderer.color = hitFlashColor;
         yield return new WaitForSeconds(hitFlashTime);
         spriteRenderer.color = originalColor;
+        flashing = false;
     }
 
     void OnDied()
     {
+        burnTimeLeft = 0f;
+
         if (onDeathOverride != null)
         {
             onDeathOverride();

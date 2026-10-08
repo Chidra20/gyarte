@@ -63,12 +63,19 @@ public class PlayerAttack : MonoBehaviour
     public float handDistance = 0.4f;
     [Tooltip("Vertical offset of the hand when casting sideways.")]
     public float handHeight = -0.07f;
-    [Tooltip("Sideways shift toward the casting hand when shooting up or down.")]
+    [Tooltip("Sideways shift toward the casting hand when shooting up.")]
     public float sideHandOffset = 0.25f;
+    [Tooltip("Where the fire starts when casting down (both hands in front, matching the LookingDownFireball art).")]
+    public Vector2 castDownHand = new Vector2(-0.02f, -0.6f);
 
     public bool IsCasting { get; private set; }
     public bool IsSwinging { get; private set; }
     public bool IsAttacking => IsCasting || IsSwinging;
+    // True while the attack pose has to stay on screen. The cast only needs it until the fireball
+    // leaves the hand; after that, moving switches straight back to the walk/run animations.
+    public bool IsAnimationLocked => IsSwinging || (IsCasting && !fireLaunched);
+
+    private bool fireLaunched;
     public int SpellCharges { get; private set; }
     // 0 to 1 progress toward the next charge (stays 0 while full)
     public float RechargeProgress => SpellCharges >= maxSpellCharges ? 0f : rechargeTimer / spellRechargeTime;
@@ -98,6 +105,7 @@ public class PlayerAttack : MonoBehaviour
     }
 
     private PlayerMovement movement;
+    private PlayerDash dash;
     private Transform visual;
     private Animator animator;
     private SpriteRenderer playerSprite;
@@ -113,6 +121,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         movement = GetComponent<PlayerMovement>();
+        dash = GetComponent<PlayerDash>();
         visual = transform.Find("visual");
         if (visual != null)
         {
@@ -159,6 +168,7 @@ public class PlayerAttack : MonoBehaviour
     public bool TryMelee()
     {
         if (IsSwinging || MeleeBlockedReason != "") return false;
+        if (dash != null && dash.IsDashing) return false;
         nextSwingTime = Time.time + Mathf.Max(meleeCooldown, swingDuration);
         StartCoroutine(Swing());
         return true;
@@ -167,6 +177,7 @@ public class PlayerAttack : MonoBehaviour
     public bool TryCast()
     {
         if (SpellBlockedReason != "") return false;
+        if (dash != null && dash.IsDashing) return false;
         StartCoroutine(CastFireSpell());
         return true;
     }
@@ -335,6 +346,7 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator CastFireSpell()
     {
         IsCasting = true;
+        fireLaunched = false;
         SpellCharges--;
 
         Vector2 direction = Facing();
@@ -344,8 +356,16 @@ public class PlayerAttack : MonoBehaviour
 
         yield return new WaitForSeconds(fireStartFrame * frameTime);
         ShootProjectile(direction);
+        fireLaunched = true;
 
-        yield return new WaitForSeconds((spellTotalFrames - fireStartFrame) * frameTime);
+        // Let the rest of the cast play out, unless the player starts moving: then the spell is done
+        // and the movement animations take over right away
+        float remaining = (spellTotalFrames - fireStartFrame) * frameTime;
+        while (remaining > 0f && (movement == null || !movement.IsMoving))
+        {
+            remaining -= Time.deltaTime;
+            yield return null;
+        }
         IsCasting = false;
     }
 
@@ -363,8 +383,10 @@ public class PlayerAttack : MonoBehaviour
         Vector2 hand = direction * handDistance;
         if (Mathf.Abs(direction.x) > 0.5f)
             hand.y += handHeight;
+        else if (direction.y < -0.5f)
+            hand = castDownHand; // casting down: the fire comes out between both hands
         else
-            hand.x += side * sideHandOffset; // casting up/down: start from the hand, not the head
+            hand.x += side * sideHandOffset; // casting up: start from the hand, not the head
 
         // Shooting up starts behind the player, everything else in front
         int playerOrder = playerSprite != null ? playerSprite.sortingOrder : 0;

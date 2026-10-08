@@ -15,6 +15,14 @@ public class FireProjectile : MonoBehaviour
     public Sprite[] fadeFrames;
     public float framesPerSecond = 18f;
 
+    [Header("Frames for shooting down (optional, drawn pointing down)")]
+    [Tooltip("Used instead of the frames above when the fireball goes down. Leave empty to rotate the normal frames.")]
+    public Sprite[] downLaunchFrames;
+    public Sprite[] downFlyFrames;
+    public Sprite[] downFadeFrames;
+    [Tooltip("Distance from the top of the down flame to its head.")]
+    public float downHeadOffset = 0.9f;
+
     [Header("Flight")]
     public float speed = 8f;
     public float maxDistance = 7f;
@@ -22,6 +30,13 @@ public class FireProjectile : MonoBehaviour
     public float headOffset = 0.6f;
     public float hitRadius = 0.3f;
     public string wallTag = "wall";
+
+    [Header("Burn")]
+    [Tooltip("How long enemies hit by the fireball keep burning.")]
+    public float burnDuration = 3f;
+    public int burnDamagePerTick = 1;
+    [Tooltip("Seconds between burn damage ticks.")]
+    public float burnTickInterval = 1f;
 
     [Header("Glow")]
     public Light2D glow;
@@ -32,12 +47,16 @@ public class FireProjectile : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Vector2 direction;
-    private float knockback;
     private int damage;
     private LayerMask enemyLayers;
+    private float knockback;
     private float travelled;
     private float frameTimer;
     private int frameIndex;
+
+    // The frame set and head distance in use for this shot (normal or down-facing)
+    private Sprite[] activeLaunch, activeFly, activeFade;
+    private float activeHeadOffset;
 
     private ContactFilter2D wallFilter = new ContactFilter2D { useTriggers = false };
     private readonly RaycastHit2D[] wallHits = new RaycastHit2D[8];
@@ -50,10 +69,10 @@ public class FireProjectile : MonoBehaviour
     // knockback: how hard each enemy hit is pushed along the bolt's direction
     public void Launch(Vector2 direction, int damage, LayerMask enemyLayers, int sortingOrder, float knockback = 0f)
     {
-        this.knockback = knockback;
         this.direction = direction.normalized;
         this.damage = damage;
         this.enemyLayers = enemyLayers;
+        this.knockback = knockback;
 
         targets.Clear();
         alreadyHit.Clear();
@@ -64,17 +83,37 @@ public class FireProjectile : MonoBehaviour
         spriteRenderer.sortingOrder = sortingOrder;
         spriteRenderer.enabled = true;
 
-        // Aim, and flip vertically when going left so the flame isn't drawn upside down
-        float angle = Mathf.Atan2(this.direction.y, this.direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        transform.localScale = new Vector3(1f, this.direction.x < -0.1f ? -1f : 1f, 1f);
+        bool useDownFrames = this.direction.y < -0.5f && downFlyFrames != null && downFlyFrames.Length > 0;
+        if (useDownFrames)
+        {
+            // The down flames are already drawn pointing down, so no rotation
+            activeLaunch = downLaunchFrames ?? new Sprite[0];
+            activeFly = downFlyFrames;
+            activeFade = downFadeFrames ?? new Sprite[0];
+            activeHeadOffset = downHeadOffset;
+            transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+            if (glow != null) glow.transform.localPosition = new Vector3(0f, -0.5f, 0f);
+        }
+        else
+        {
+            // Aim, and flip vertically when going left so the flame isn't drawn upside down
+            activeLaunch = launchFrames;
+            activeFly = flyFrames;
+            activeFade = fadeFrames;
+            activeHeadOffset = headOffset;
+            float angle = Mathf.Atan2(this.direction.y, this.direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            transform.localScale = new Vector3(1f, this.direction.x < -0.1f ? -1f : 1f, 1f);
+            if (glow != null) glow.transform.localPosition = new Vector3(0.5f, 0f, 0f);
+        }
 
         if (glow != null)
         {
             EnsureGlobalLight();
             glow.enabled = true;
         }
-        SetPhase(launchFrames.Length > 0 ? Phase.Launch : Phase.Fly);
+        SetPhase(activeLaunch.Length > 0 ? Phase.Launch : Phase.Fly);
         gameObject.SetActive(true);
     }
 
@@ -102,7 +141,7 @@ public class FireProjectile : MonoBehaviour
         if (phase == Phase.Fade) return;
 
         float step = speed * Time.deltaTime;
-        Vector2 head = (Vector2)transform.position + direction * headOffset;
+        Vector2 head = (Vector2)transform.position + direction * activeHeadOffset;
 
         // Stop at walls instead of flying through them
         int count = Physics2D.CircleCast(head, hitRadius * 0.5f, direction, wallFilter, wallHits, step);
@@ -120,7 +159,7 @@ public class FireProjectile : MonoBehaviour
         travelled += step;
 
         // Piercing: damage every enemy the flame passes through, once each, and keep flying
-        Collider2D[] enemies = Physics2D.OverlapCircleAll((Vector2)transform.position + direction * headOffset, hitRadius, enemyLayers);
+        Collider2D[] enemies = Physics2D.OverlapCircleAll((Vector2)transform.position + direction * activeHeadOffset, hitRadius, enemyLayers);
         foreach (Collider2D enemy in enemies)
         {
             EnemyHealth health = enemy.GetComponent<EnemyHealth>();
@@ -128,6 +167,7 @@ public class FireProjectile : MonoBehaviour
 
             alreadyHit.Add(health);
             health.TakeDamage(damage, direction * knockback);
+            health.ApplyBurn(burnDuration, burnDamagePerTick, burnTickInterval);
         }
 
         if (travelled >= maxDistance) SetPhase(Phase.Fade);
@@ -179,9 +219,9 @@ public class FireProjectile : MonoBehaviour
     {
         switch (phase)
         {
-            case Phase.Launch: return launchFrames;
-            case Phase.Fly: return flyFrames;
-            default: return fadeFrames;
+            case Phase.Launch: return activeLaunch ?? launchFrames;
+            case Phase.Fly: return activeFly ?? flyFrames;
+            default: return activeFade ?? fadeFrames;
         }
     }
 
