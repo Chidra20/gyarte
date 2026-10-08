@@ -11,6 +11,8 @@ Read the Obsidian vault in `Obsidian/` before doing anything else. It is the blu
 3. `Obsidian/Roadmap.md` — the plan, open decisions and known issues.
 4. The system note under `Obsidian/Systems/` for whatever the task touches, plus `Obsidian/Architecture.md` when the task crosses systems.
 
+A startup hook (`.claude/settings.json`) lists the vault notes changed in the last five commits and any uncommitted vault edits. Read those notes first, since they are what changed since the last session.
+
 The vault may be out of date if work happened outside a session. When it disagrees with the code, the code is right; fix the note.
 
 ## Keep the vault current

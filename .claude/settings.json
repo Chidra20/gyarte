@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && echo 'Recent Obsidian vault changes. Read the notes listed here (and any uncommitted ones) before starting work:' && git log -5 --date=short --format='%n%ad %an: %s' --name-only -- 'Obsidian/*.md' && echo && echo 'Uncommitted vault edits:' && git status --short -- Obsidian"
+          }
+        ]
+      }
+    ]
+  }
+}
