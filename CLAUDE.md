@@ -32,3 +32,7 @@ The vault may be out of date if work happened outside a session. When it disagre
 - **Editor state belongs to the user.** Check whether Play mode is running before changing a scene, and say when you start or stop it.
 - **Renames and moves** of assets go through Unity (or keep the `.meta` file with the asset) so references survive.
 - **Git:** commit only when asked. Do not touch scenes or changes you did not make.
+
+## The week Log
+
+Every time I ask you for this, you will look over the project, the notes, the vault, gather all the info about what was done that week, look at the code of the relevant changes and give a detailed text on that weeks' work.

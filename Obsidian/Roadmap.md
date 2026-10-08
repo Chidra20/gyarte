@@ -39,6 +39,14 @@ The level randomizer uses the whole Catacombs pack:
 
 Nothing can seal a room off; a flood fill checks every placement. See [[Decorations]] and [[Level Randomizer]].
 
+### Done (8 Oct 2026, by yumisyumm): dash and polish
+
+- **Dash** with dodging, a cooldown and afterimages ([[Player]]).
+- **Health bar and stamina hearts** in the HUD, replacing the `HP` text ([[HUD]]).
+- **Fire spell:** burns what it hits, has a cast-down animation, and moving cancels the cast once the fireball is out ([[Combat]]).
+- **Faster swing.**
+- **Visited rooms stay lit** and the darkness fades. Slimes in unexplored rooms can't see the player, and about half of each wave spawns in other rooms ([[Rooms and Darkness]], [[Game Loop]]).
+
 ### Still to do from Week 2
 
 - **Fix the remaining combat bug** listed under Known issues: the swing hitting through walls.
@@ -68,8 +76,7 @@ Nothing can seal a room off; a flood fill checks every placement. See [[Decorati
 ## Later ideas
 
 - More enemy types on a shared enemy base
-- Visited rooms shown dimmed, or real 2D lighting
-- Decoration pass with torches, candles, spikes, urns and coffins from the art pack. Everything in the pack is now identified ([[Catacombs Asset Catalog]]); the plan is data-driven decoration definitions placed by the randomizer
+- Visited rooms dimmed when the player isn't in them (they stay fully lit today), or real 2D lighting
 - Level seeds, room roles (treasure, boss), loops between rooms
 - Sound and music; none exist yet
 - Menus, pause and save
